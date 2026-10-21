@@ -29,7 +29,7 @@ public static partial class SnapshotStore
 {
     static string Root => AppInfo.LocalDir;
     public static string SnapDir => Path.Combine(Root, "snapshots");
-    static string IndexPath => Path.Combine(Root, "index.jsonl");
+    public static string IndexPath => Path.Combine(Root, "index.jsonl");
     static string StatePath => Path.Combine(Root, "state.json");
 
     public static LedgerState LoadState() => AtomicFile.Read(StatePath, s => JsonSerializer.Deserialize<LedgerState>(s, Snapshot.Json)) ?? new();

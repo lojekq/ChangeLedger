@@ -37,9 +37,20 @@ public partial class App : Application
         if (a.Demo) DemoData.Fill();
         else if (Install.IsInstalled) InstalledStart(); // Debug builds and exes in Downloads write nothing by themselves
 
-        // App features: services, hotkeys, tray items, settings section (template sample below)
-        SettingsPage.AppSection = SampleSettings.Create;
-        SampleSettings.Apply();
+        // App features: settings section, tray items, scheduler task, start-up snapshot
+        SettingsPage.AppSection = () => new SettingsSection();
+        RemoveData = () => { if (!a.Demo) TaskRegistration.Remove(); return null; };
+        Exiting += Ledger.Cancel;
+        if (!a.Demo && !AppInfo.IsElevated)
+        {
+            if (Install.IsInstalled) // Debug builds create the task only with the Repair button
+                try { TaskRegistration.Ensure(); }
+                catch (Exception ex) { Log.Error("task ensure", ex); }
+            Ledger.StartupSnapshot();
+        }
+        Ledger.Refresh();
+        var page = a.Page;
+        if (page?.StartsWith("changes-") == true) (ChangesPage.Scene, page) = (page["changes-".Length..], "changes"); // --demo screenshot scenes
 
         window = new MainWindow();
         if (a.Width > 0) (window.Width, window.Height) = (a.Width, a.Height);
@@ -56,7 +67,13 @@ public partial class App : Application
         };
         Capture.Attach(window, () => { if (a.Autoplay) Autoplay.Start(window); });
 
-        if (a.Screenshot is null) Tray.Create(ShowMain, () => Quit());
+        window.Activated += (_, _) => Ledger.Refresh();
+        if (a.Screenshot is null)
+        {
+            var items = TrayMenu.Items();
+            Tray.Create(ShowMain, () => Quit(), items);
+            TrayMenu.Attach(items);
+        }
         SessionEnding += (_, _) => RaiseExiting();
         Updates.Found += (version, url) =>
         {
@@ -68,7 +85,7 @@ public partial class App : Application
         };
         Updates.Start();
 
-        if (!a.Background) ShowMain(a.Page);
+        if (!a.Background) ShowMain(page);
     }
 
     public static void ShowMain(string? page)

@@ -7,7 +7,6 @@
   <data name="Tray.Open" xml:space="preserve"><value>Открыть</value></data>
   <data name="Tray.Exit" xml:space="preserve"><value>Выход</value></data>
   <data name="Tray.Hidden" xml:space="preserve"><value>Программа продолжает работать в области уведомлений. Чтобы выйти, щёлкните значок правой кнопкой и выберите «Выход».</value></data>
-  <data name="Page.Main" xml:space="preserve"><value>Главная</value></data>
   <data name="Page.Settings" xml:space="preserve"><value>Настройки</value></data>
   <data name="Page.About" xml:space="preserve"><value>О программе</value></data>
   <data name="Settings.Language" xml:space="preserve"><value>Язык</value></data>
@@ -34,7 +33,7 @@
   <data name="Update.Message" xml:space="preserve"><value>Доступна версия {0}.</value></data>
   <data name="Update.Open" xml:space="preserve"><value>Страница релиза</value></data>
   <data name="Elevated.Title" xml:space="preserve"><value>Запущено от администратора</value></data>
-  <data name="Elevated.Message" xml:space="preserve"><value>Программе не нужны права администратора. Перезапустите её обычным способом.</value></data>
+  <data name="Elevated.Message" xml:space="preserve"><value>Снимки выключены: под администратором Windows показывает больше задач планировщика, и снимки перестали бы быть сравнимыми. Запустите Change Ledger обычным способом.</value></data>
   <data name="Crash.Message" xml:space="preserve"><value>{0} аварийно завершилась.
 
 Лог ошибки: {1}
@@ -43,13 +42,133 @@
   <data name="Hotkey.Placeholder" xml:space="preserve"><value>Нажмите сочетание клавиш</value></data>
   <data name="Hotkey.Busy" xml:space="preserve"><value>Занято другой программой</value></data>
   <data name="Hotkey.Failed" xml:space="preserve"><value>Не удалось зарегистрировать</value></data>
-  <data name="Sample.Hotkey" xml:space="preserve"><value>Сочетание клавиш для окна</value></data>
-  <data name="Main.Title" xml:space="preserve"><value>Задачи</value></data>
-  <data name="Main.Subtitle" xml:space="preserve"><value>Пример страницы шаблона. Замените её страницами программы.</value></data>
-  <data name="Main.Empty" xml:space="preserve"><value>Пока пусто.</value></data>
-  <data name="Demo.Build" xml:space="preserve"><value>Сборка проекта</value></data>
-  <data name="Demo.Dataset" xml:space="preserve"><value>Загрузка датасета</value></data>
-  <data name="Demo.Report" xml:space="preserve"><value>Отчёт для Alex</value></data>
-  <data name="Demo.Daily" xml:space="preserve"><value>каждый день в 18:00</value></data>
-  <data name="Demo.Backup" xml:space="preserve"><value>Ночная копия</value></data>
+  <data name="Page.Changes" xml:space="preserve"><value>Изменения</value></data>
+  <data name="Page.Power" xml:space="preserve"><value>Перезагрузки</value></data>
+  <data name="Changes.24h" xml:space="preserve"><value>24 ч</value></data>
+  <data name="Changes.7d" xml:space="preserve"><value>7 дней</value></data>
+  <data name="Changes.30d" xml:space="preserve"><value>30 дней</value></data>
+  <data name="Changes.BeforeAfter" xml:space="preserve"><value>До/после обновления</value></data>
+  <data name="Changes.BeforeAfterKb" xml:space="preserve"><value>До/после {0}</value></data>
+  <data name="Changes.Search" xml:space="preserve"><value>Поиск</value></data>
+  <data name="Changes.ShowHidden" xml:space="preserve"><value>Показать скрытое</value></data>
+  <data name="Changes.CopyAi" xml:space="preserve"><value>Копировать для ИИ</value></data>
+  <data name="Changes.Copied" xml:space="preserve"><value>Скопировано</value></data>
+  <data name="Changes.SnapshotNow" xml:space="preserve"><value>Снимок сейчас</value></data>
+  <data name="Changes.Copy" xml:space="preserve"><value>Копировать</value></data>
+  <data name="Changes.CopyPath" xml:space="preserve"><value>Копировать путь</value></data>
+  <data name="Changes.NoUpdates" xml:space="preserve"><value>В истории нет обновлений Windows</value></data>
+  <data name="Changes.NoBefore" xml:space="preserve"><value>Нет снимка до этого обновления</value></data>
+  <data name="Changes.NoAfter" xml:space="preserve"><value>Нет снимка после перезагрузки, которая была после обновления</value></data>
+  <data name="Changes.NoSnapshots" xml:space="preserve"><value>Снимков пока нет. Первый будет через 2 минуты после запуска, или прямо сейчас:</value></data>
+  <data name="Changes.FirstSnapshot" xml:space="preserve"><value>Первый снимок готов. Сравнивать будет с чем начиная с завтра.</value></data>
+  <data name="Changes.PickRange" xml:space="preserve"><value>Выберите день слева или диапазон сверху.</value></data>
+  <data name="Changes.Error" xml:space="preserve"><value>Не удалось прочитать снимок: {0}</value></data>
+  <data name="Changes.None" xml:space="preserve"><value>Между {0} и {1} изменений нет.</value></data>
+  <data name="Changes.NoData" xml:space="preserve"><value>Нет данных в снимке {0}: {1}</value></data>
+  <data name="Reason.scheduled" xml:space="preserve"><value>ежедневный</value></data>
+  <data name="Reason.startup" xml:space="preserve"><value>после запуска</value></data>
+  <data name="Reason.manual" xml:space="preserve"><value>вручную</value></data>
+  <data name="Banner.Build" xml:space="preserve"><value>Сменилась сборка Windows (крупное обновление): ожидайте много изменений.</value></data>
+  <data name="Banner.Format" xml:space="preserve"><value>Изменился формат сборщика ({0}): возможны ложные изменения.</value></data>
+  <data name="Banner.NoData" xml:space="preserve"><value>В одном из снимков нет данных: {0}. Эти категории не сравниваются.</value></data>
+  <data name="Banner.Log" xml:space="preserve"><value>Журнал Windows хранит события только с {0}.</value></data>
+  <data name="Cat.os" xml:space="preserve"><value>Windows</value></data>
+  <data name="Cat.apps" xml:space="preserve"><value>Программы</value></data>
+  <data name="Cat.drivers" xml:space="preserve"><value>Драйверы</value></data>
+  <data name="Cat.services" xml:space="preserve"><value>Службы</value></data>
+  <data name="Cat.tasks" xml:space="preserve"><value>Задачи планировщика</value></data>
+  <data name="Cat.autostart" xml:space="preserve"><value>Автозагрузка</value></data>
+  <data name="Cat.env" xml:space="preserve"><value>Переменные среды</value></data>
+  <data name="Cat.wake" xml:space="preserve"><value>Устройства пробуждения</value></data>
+  <data name="Start.0" xml:space="preserve"><value>Загрузка</value></data>
+  <data name="Start.1" xml:space="preserve"><value>Система</value></data>
+  <data name="Start.2" xml:space="preserve"><value>Автоматически</value></data>
+  <data name="Start.3" xml:space="preserve"><value>Вручную</value></data>
+  <data name="Start.4" xml:space="preserve"><value>Отключена</value></data>
+  <data name="Word.Yes" xml:space="preserve"><value>да</value></data>
+  <data name="Word.No" xml:space="preserve"><value>нет</value></data>
+  <data name="Count.Added" xml:space="preserve"><value>добавлено {0}</value></data>
+  <data name="Count.Removed" xml:space="preserve"><value>удалено {0}</value></data>
+  <data name="Count.Changed" xml:space="preserve"><value>изменено {0}</value></data>
+  <data name="Env.User" xml:space="preserve"><value>пользователь</value></data>
+  <data name="Env.Machine" xml:space="preserve"><value>система</value></data>
+  <data name="Path.Added" xml:space="preserve"><value>добавлен на позицию {0}: {1}</value></data>
+  <data name="Path.Removed" xml:space="preserve"><value>удалён: {0}</value></data>
+  <data name="Path.Order" xml:space="preserve"><value>порядок изменился</value></data>
+  <data name="Power.Restart" xml:space="preserve"><value>Перезагрузка (плановая)</value></data>
+  <data name="Power.Shutdown" xml:space="preserve"><value>Выключение</value></data>
+  <data name="Power.Bsod" xml:space="preserve"><value>Неожиданно: BSOD {0}</value></data>
+  <data name="Power.PowerLoss" xml:space="preserve"><value>Неожиданно: питание или сброс</value></data>
+  <data name="Power.PowerButton" xml:space="preserve"><value>Неожиданно: удержание кнопки</value></data>
+  <data name="Power.Unknown" xml:space="preserve"><value>Перезагрузка (причина неизвестна)</value></data>
+  <data name="Power.Wake" xml:space="preserve"><value>Пробуждение</value></data>
+  <data name="Boot.1" xml:space="preserve"><value>быстрый запуск</value></data>
+  <data name="Boot.2" xml:space="preserve"><value>выход из гибернации</value></data>
+  <data name="Hint.WakeTask" xml:space="preserve"><value>Планировщик → задача → Условия → снять «Пробуждать компьютер для выполнения задачи»</value></data>
+  <data name="Hint.WakeDevice" xml:space="preserve"><value>Диспетчер устройств → устройство → Управление электропитанием → снять «Разрешить этому устройству выводить компьютер из ждущего режима»</value></data>
+  <data name="Hint.WakeUnknown" xml:space="preserve"><value>Windows не записала источник</value></data>
+  <data name="Hint.Bsod" xml:space="preserve"><value>Посмотрите, что изменилось перед этим, в первую очередь драйверы</value></data>
+  <data name="Hint.PowerLoss" xml:space="preserve"><value>Пропало питание, нажали Reset или ПК намертво завис</value></data>
+  <data name="Hint.PowerButton" xml:space="preserve"><value>Кнопку питания удерживали: ПК завис?</value></data>
+  <data name="Md.Title" xml:space="preserve"><value>Изменения Windows с {0} по {1}</value></data>
+  <data name="Md.Masked" xml:space="preserve"><value>секреты замаскированы</value></data>
+  <data name="Md.Power" xml:space="preserve"><value>Перезагрузки и пробуждения</value></data>
+  <data name="Md.Updates" xml:space="preserve"><value>Центр обновления Windows</value></data>
+  <data name="Md.More" xml:space="preserve"><value>… обрезано ещё строк: {0}</value></data>
+  <data name="Wu.Store" xml:space="preserve"><value>Microsoft Store: обновлено приложений: {0}</value></data>
+  <data name="Wu.Failed" xml:space="preserve"><value>ошибка</value></data>
+  <data name="Power.Title" xml:space="preserve"><value>Почему ПК перезагрузился или проснулся</value></data>
+  <data name="Power.Days7" xml:space="preserve"><value>7 дней</value></data>
+  <data name="Power.Days30" xml:space="preserve"><value>30 дней</value></data>
+  <data name="Power.Days90" xml:space="preserve"><value>90 дней</value></data>
+  <data name="Power.Col.Time" xml:space="preserve"><value>Время</value></data>
+  <data name="Power.Col.Event" xml:space="preserve"><value>Событие</value></data>
+  <data name="Power.Col.Cause" xml:space="preserve"><value>Причина / инициатор</value></data>
+  <data name="Power.Col.Hint" xml:space="preserve"><value>Что сделать</value></data>
+  <data name="Power.Before" xml:space="preserve"><value>Что изменилось перед этим</value></data>
+  <data name="Power.WakeNow" xml:space="preserve"><value>Сейчас могут будить ПК</value></data>
+  <data name="Power.WakeTasks" xml:space="preserve"><value>Задачи с «Пробуждать компьютер»</value></data>
+  <data name="Power.WakeDevices" xml:space="preserve"><value>Устройства</value></data>
+  <data name="Power.None" xml:space="preserve"><value>нет</value></data>
+  <data name="Power.Empty" xml:space="preserve"><value>За этот период перезагрузок и пробуждений нет.</value></data>
+  <data name="Set.Title" xml:space="preserve"><value>Change Ledger</value></data>
+  <data name="Set.Daily" xml:space="preserve"><value>Ежедневный снимок</value></data>
+  <data name="Set.Daily.Note" xml:space="preserve"><value>Задача планировщика вашего пользователя запускает тот же exe без окна; пропущенное время догоняется при следующем входе</value></data>
+  <data name="Set.Task" xml:space="preserve"><value>Задача планировщика</value></data>
+  <data name="Set.Repair" xml:space="preserve"><value>Починить</value></data>
+  <data name="Set.Keep" xml:space="preserve"><value>Хранить снимки</value></data>
+  <data name="Set.Days" xml:space="preserve"><value>дн.</value></data>
+  <data name="Set.Mb" xml:space="preserve"><value>МБ</value></data>
+  <data name="Set.Secrets" xml:space="preserve"><value>Дополнительные секретные переменные</value></data>
+  <data name="Set.Secrets.Note" xml:space="preserve"><value>Имена с KEY, TOKEN, SECRET, PASS, PWD, CRED или AUTH маскируются и так; их значения не попадают на диск</value></data>
+  <data name="Set.Folder" xml:space="preserve"><value>Открыть папку данных</value></data>
+  <data name="Set.Rebuild" xml:space="preserve"><value>Перестроить индекс</value></data>
+  <data name="Set.Delete" xml:space="preserve"><value>Удалить задачу и все данные</value></data>
+  <data name="Set.Usage" xml:space="preserve"><value>Сейчас {0} МБ, снимков: {1} · {2}</value></data>
+  <data name="Set.Delete.Confirm" xml:space="preserve"><value>Удалить задачу планировщика и снимки ({0} шт., {1} МБ) в {2}? Ежедневный снимок выключится.</value></data>
+  <data name="Task.Ok" xml:space="preserve"><value>OK, ежедневно в {0}</value></data>
+  <data name="Task.Missing" xml:space="preserve"><value>Не найдена</value></data>
+  <data name="Task.Stale" xml:space="preserve"><value>Путь устарел: exe перенесли. Нажмите «Починить».</value></data>
+  <data name="Task.Off" xml:space="preserve"><value>Выключена</value></data>
+  <data name="Task.Error" xml:space="preserve"><value>Не удалось прочитать планировщик</value></data>
+  <data name="Task.LastRun" xml:space="preserve"><value>последний запуск {0} ({1})</value></data>
+  <data name="Task.NotInstalled" xml:space="preserve"><value>Эта копия лежит не в {0}, поэтому задачу создаёт только кнопка «Починить».</value></data>
+  <data name="Task.Failed" xml:space="preserve"><value>Задача планировщика не изменена: {0}</value></data>
+  <data name="Snap.Busy" xml:space="preserve"><value>Уже идёт другой снимок. Попробуйте через минуту.</value></data>
+  <data name="Snap.First" xml:space="preserve"><value>Первый снимок сохранён.</value></data>
+  <data name="Snap.Written" xml:space="preserve"><value>Снимок сохранён, изменений с прошлого: {0}.</value></data>
+  <data name="Snap.Unchanged" xml:space="preserve"><value>С прошлого снимка ничего не изменилось.</value></data>
+  <data name="Snap.Failed" xml:space="preserve"><value>Снимок не удался, подробности в логе.</value></data>
+  <data name="Tray.Snapshot" xml:space="preserve"><value>Снимок сейчас</value></data>
+  <data name="Tray.Day" xml:space="preserve"><value>Что изменилось за 24 ч</value></data>
+  <data name="Tray.Week" xml:space="preserve"><value>Что изменилось за 7 дней</value></data>
+  <data name="Tray.Why" xml:space="preserve"><value>Почему перезагрузился или проснулся</value></data>
+  <data name="Tray.Settings" xml:space="preserve"><value>Настройки</value></data>
+  <data name="Tray.Tip" xml:space="preserve"><value>{0} · снимок {1} · изменений: {2}</value></data>
+  <data name="Demo.Wu1" xml:space="preserve"><value>2026-10 Накопительное обновление для Windows 11 Insider Preview (26300.9512) (KB5070311)</value></data>
+  <data name="Demo.Wu2" xml:space="preserve"><value>Обновление платформы защиты от вредоносных программ Microsoft Defender — KB4052623 (версия 4.18.25090.3)</value></data>
+  <data name="Demo.Wu3" xml:space="preserve"><value>Средство удаления вредоносных программ Windows x64 — v5.141 (KB890830)</value></data>
+  <data name="Demo.Planned" xml:space="preserve"><value>Операционная система: обновление (запланированное)</value></data>
+  <data name="Demo.Mouse" xml:space="preserve"><value>HID-совместимая мышь (001)</value></data>
+  <data name="Demo.WakeTimer" xml:space="preserve"><value>Будет выполнено назначенное задание "NT TASK\Microsoft\Windows\UpdateOrchestrator\Schedule Wake To Work", запросившее вывод компьютера из спящего режима.</value></data>
 </root>

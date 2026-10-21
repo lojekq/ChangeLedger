@@ -9,7 +9,7 @@ public sealed record PathStep(char Kind, string Element, int Position);
 
 /// <summary>Kind: '+' added, '-' removed, '~' changed. Noise: matched the built-in noise list (shown with "Show hidden").</summary>
 public sealed record Change(string Category, char Kind, string Key, string Title, IReadOnlyList<PropChange> Props, bool Noise,
-    IReadOnlyList<PathStep>? Path = null, bool PathOrder = false);
+    IReadOnlyList<PathStep>? Path = null, bool PathOrder = false, Item? A = null, Item? B = null);
 
 /// <summary>NoDataIn 'A'/'B' + Error: the category failed in that snapshot, so no diff is built (an error is not "everything removed").</summary>
 public sealed record CategoryDiff(string Id, IReadOnlyList<Change> Changes, char? NoDataIn = null, string? Error = null, bool FormatChanged = false);
@@ -33,6 +33,7 @@ public static partial class DiffEngine
     /// </summary>
     public static readonly (string Category, Regex Key)[] Noise =
     [
+        ("services", new Regex("^BITS$")), // Windows itself flips Start 2 ↔ 3 (2026-10-21, 20 min apart)
     ];
 
     public static Diff Compare(Snapshot a, Snapshot b)
@@ -58,20 +59,20 @@ public static partial class DiffEngine
         var da = a.ToDictionary(i => i.K, StringComparer.Ordinal);
         var db = b.ToDictionary(i => i.K, StringComparer.Ordinal);
         var list = new List<Change>();
-        foreach (var x in b.Where(x => !da.ContainsKey(x.K))) list.Add(new(category, '+', x.K, x.T, [], IsNoise(category, x.K)));
-        foreach (var x in a.Where(x => !db.ContainsKey(x.K))) list.Add(new(category, '-', x.K, x.T, [], IsNoise(category, x.K)));
+        foreach (var x in b.Where(x => !da.ContainsKey(x.K))) list.Add(new(category, '+', x.K, x.T, [], IsNoise(category, x.K), B: x));
+        foreach (var x in a.Where(x => !db.ContainsKey(x.K))) list.Add(new(category, '-', x.K, x.T, [], IsNoise(category, x.K), A: x));
         foreach (var x in b.Where(x => da.ContainsKey(x.K)))
         {
             var old = da[x.K];
             if (category == "env" && IsPath(x.K))
             {
                 var (steps, order) = PathDiff(old["Value"] ?? "", x["Value"] ?? "");
-                if (steps.Count > 0 || order) list.Add(new(category, '~', x.K, x.T, [], IsNoise(category, x.K), steps, order));
+                if (steps.Count > 0 || order) list.Add(new(category, '~', x.K, x.T, [], IsNoise(category, x.K), steps, order, old, x));
                 continue;
             }
             var props = old.P.Keys.Union(x.P.Keys).Order(StringComparer.Ordinal)
                 .Where(p => old[p] != x[p]).Select(p => new PropChange(p, old[p], x[p])).ToList();
-            if (props.Count > 0) list.Add(new(category, '~', x.K, x.T, props, IsNoise(category, x.K)));
+            if (props.Count > 0) list.Add(new(category, '~', x.K, x.T, props, IsNoise(category, x.K), A: old, B: x));
         }
         return [.. list.OrderBy(c => c.Title, StringComparer.CurrentCultureIgnoreCase)];
     }

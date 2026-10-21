@@ -31,8 +31,10 @@
         <ui:NavigationView x:Name="Nav" Grid.Row="2" PaneDisplayMode="Left" IsBackButtonVisible="Collapsed"
                            IsPaneToggleVisible="False" OpenPaneLength="220">
             <ui:NavigationView.MenuItems>
-                <ui:NavigationViewItem Content="{l:T Page.Main}" Icon="{ui:SymbolIcon Home24}"
-                                       TargetPageType="{x:Type f:MainPage}" TargetPageTag="main" />
+                <ui:NavigationViewItem Content="{l:T Page.Changes}" Icon="{ui:SymbolIcon History24}"
+                                       TargetPageType="{x:Type f:ChangesPage}" TargetPageTag="changes" />
+                <ui:NavigationViewItem Content="{l:T Page.Power}" Icon="{ui:SymbolIcon Power24}"
+                                       TargetPageType="{x:Type f:PowerPage}" TargetPageTag="power" />
             </ui:NavigationView.MenuItems>
             <ui:NavigationView.FooterMenuItems>
                 <ui:NavigationViewItem Content="{l:T Page.Settings}" Icon="{ui:SymbolIcon Settings24}"

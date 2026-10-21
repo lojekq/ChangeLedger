@@ -7,7 +7,6 @@
   <data name="Tray.Open" xml:space="preserve"><value>Open</value></data>
   <data name="Tray.Exit" xml:space="preserve"><value>Exit</value></data>
   <data name="Tray.Hidden" xml:space="preserve"><value>Still running in the notification area. To quit, right-click the icon and choose Exit.</value></data>
-  <data name="Page.Main" xml:space="preserve"><value>Home</value></data>
   <data name="Page.Settings" xml:space="preserve"><value>Settings</value></data>
   <data name="Page.About" xml:space="preserve"><value>About</value></data>
   <data name="Settings.Language" xml:space="preserve"><value>Language</value></data>
@@ -34,7 +33,7 @@
   <data name="Update.Message" xml:space="preserve"><value>Version {0} is available.</value></data>
   <data name="Update.Open" xml:space="preserve"><value>Release page</value></data>
   <data name="Elevated.Title" xml:space="preserve"><value>Running as administrator</value></data>
-  <data name="Elevated.Message" xml:space="preserve"><value>This app does not need administrator rights. Restart it the usual way.</value></data>
+  <data name="Elevated.Message" xml:space="preserve"><value>Snapshots are off: as administrator Windows shows more scheduled tasks, and snapshots would stop being comparable. Start Change Ledger the usual way.</value></data>
   <data name="Crash.Message" xml:space="preserve"><value>{0} has crashed and closed.
 
 Crash log: {1}
@@ -43,13 +42,133 @@ Open the folder?</value></data>
   <data name="Hotkey.Placeholder" xml:space="preserve"><value>Press a key combination</value></data>
   <data name="Hotkey.Busy" xml:space="preserve"><value>Taken by another program</value></data>
   <data name="Hotkey.Failed" xml:space="preserve"><value>Could not register</value></data>
-  <data name="Sample.Hotkey" xml:space="preserve"><value>Hotkey to show the window</value></data>
-  <data name="Main.Title" xml:space="preserve"><value>Tasks</value></data>
-  <data name="Main.Subtitle" xml:space="preserve"><value>Sample page of the template. Replace it with the app's own pages.</value></data>
-  <data name="Main.Empty" xml:space="preserve"><value>Nothing here yet.</value></data>
-  <data name="Demo.Build" xml:space="preserve"><value>Project build</value></data>
-  <data name="Demo.Dataset" xml:space="preserve"><value>Dataset download</value></data>
-  <data name="Demo.Report" xml:space="preserve"><value>Report for Alex</value></data>
-  <data name="Demo.Daily" xml:space="preserve"><value>every day at 6 PM</value></data>
-  <data name="Demo.Backup" xml:space="preserve"><value>Nightly backup</value></data>
+  <data name="Page.Changes" xml:space="preserve"><value>Changes</value></data>
+  <data name="Page.Power" xml:space="preserve"><value>Reboots and wakes</value></data>
+  <data name="Changes.24h" xml:space="preserve"><value>24 hours</value></data>
+  <data name="Changes.7d" xml:space="preserve"><value>7 days</value></data>
+  <data name="Changes.30d" xml:space="preserve"><value>30 days</value></data>
+  <data name="Changes.BeforeAfter" xml:space="preserve"><value>Before/after update</value></data>
+  <data name="Changes.BeforeAfterKb" xml:space="preserve"><value>Before/after {0}</value></data>
+  <data name="Changes.Search" xml:space="preserve"><value>Search</value></data>
+  <data name="Changes.ShowHidden" xml:space="preserve"><value>Show hidden</value></data>
+  <data name="Changes.CopyAi" xml:space="preserve"><value>Copy for AI</value></data>
+  <data name="Changes.Copied" xml:space="preserve"><value>Copied</value></data>
+  <data name="Changes.SnapshotNow" xml:space="preserve"><value>Snapshot now</value></data>
+  <data name="Changes.Copy" xml:space="preserve"><value>Copy</value></data>
+  <data name="Changes.CopyPath" xml:space="preserve"><value>Copy path</value></data>
+  <data name="Changes.NoUpdates" xml:space="preserve"><value>No Windows updates in the history</value></data>
+  <data name="Changes.NoBefore" xml:space="preserve"><value>No snapshot before this update</value></data>
+  <data name="Changes.NoAfter" xml:space="preserve"><value>No snapshot after the reboot that followed this update</value></data>
+  <data name="Changes.NoSnapshots" xml:space="preserve"><value>No snapshots yet. The first one is taken 2 minutes after the start, or right now:</value></data>
+  <data name="Changes.FirstSnapshot" xml:space="preserve"><value>The first snapshot is ready. From tomorrow there is something to compare it with.</value></data>
+  <data name="Changes.PickRange" xml:space="preserve"><value>Pick a day on the left or a range above.</value></data>
+  <data name="Changes.Error" xml:space="preserve"><value>Could not read a snapshot: {0}</value></data>
+  <data name="Changes.None" xml:space="preserve"><value>No changes between {0} and {1}.</value></data>
+  <data name="Changes.NoData" xml:space="preserve"><value>No data in snapshot {0}: {1}</value></data>
+  <data name="Reason.scheduled" xml:space="preserve"><value>daily</value></data>
+  <data name="Reason.startup" xml:space="preserve"><value>after start</value></data>
+  <data name="Reason.manual" xml:space="preserve"><value>manual</value></data>
+  <data name="Banner.Build" xml:space="preserve"><value>The Windows build changed (feature update): expect many changes.</value></data>
+  <data name="Banner.Format" xml:space="preserve"><value>The collector format changed ({0}): some changes may be false.</value></data>
+  <data name="Banner.NoData" xml:space="preserve"><value>No data for {0} in one of the snapshots: these categories are not compared.</value></data>
+  <data name="Banner.Log" xml:space="preserve"><value>The Windows log keeps events only since {0}.</value></data>
+  <data name="Cat.os" xml:space="preserve"><value>Windows</value></data>
+  <data name="Cat.apps" xml:space="preserve"><value>Apps</value></data>
+  <data name="Cat.drivers" xml:space="preserve"><value>Drivers</value></data>
+  <data name="Cat.services" xml:space="preserve"><value>Services</value></data>
+  <data name="Cat.tasks" xml:space="preserve"><value>Scheduled tasks</value></data>
+  <data name="Cat.autostart" xml:space="preserve"><value>Startup</value></data>
+  <data name="Cat.env" xml:space="preserve"><value>Environment</value></data>
+  <data name="Cat.wake" xml:space="preserve"><value>Wake devices</value></data>
+  <data name="Start.0" xml:space="preserve"><value>Boot</value></data>
+  <data name="Start.1" xml:space="preserve"><value>System</value></data>
+  <data name="Start.2" xml:space="preserve"><value>Automatic</value></data>
+  <data name="Start.3" xml:space="preserve"><value>Manual</value></data>
+  <data name="Start.4" xml:space="preserve"><value>Disabled</value></data>
+  <data name="Word.Yes" xml:space="preserve"><value>yes</value></data>
+  <data name="Word.No" xml:space="preserve"><value>no</value></data>
+  <data name="Count.Added" xml:space="preserve"><value>{0} added</value></data>
+  <data name="Count.Removed" xml:space="preserve"><value>{0} removed</value></data>
+  <data name="Count.Changed" xml:space="preserve"><value>{0} changed</value></data>
+  <data name="Env.User" xml:space="preserve"><value>user</value></data>
+  <data name="Env.Machine" xml:space="preserve"><value>system</value></data>
+  <data name="Path.Added" xml:space="preserve"><value>added at position {0}: {1}</value></data>
+  <data name="Path.Removed" xml:space="preserve"><value>removed: {0}</value></data>
+  <data name="Path.Order" xml:space="preserve"><value>order changed</value></data>
+  <data name="Power.Restart" xml:space="preserve"><value>Restart (planned)</value></data>
+  <data name="Power.Shutdown" xml:space="preserve"><value>Shutdown</value></data>
+  <data name="Power.Bsod" xml:space="preserve"><value>Unexpected: BSOD {0}</value></data>
+  <data name="Power.PowerLoss" xml:space="preserve"><value>Unexpected: power or reset</value></data>
+  <data name="Power.PowerButton" xml:space="preserve"><value>Unexpected: power button held</value></data>
+  <data name="Power.Unknown" xml:space="preserve"><value>Restart (cause unknown)</value></data>
+  <data name="Power.Wake" xml:space="preserve"><value>Wake</value></data>
+  <data name="Boot.1" xml:space="preserve"><value>fast startup</value></data>
+  <data name="Boot.2" xml:space="preserve"><value>resumed from hibernation</value></data>
+  <data name="Hint.WakeTask" xml:space="preserve"><value>Task Scheduler → the task → Conditions → clear "Wake the computer to run this task"</value></data>
+  <data name="Hint.WakeDevice" xml:space="preserve"><value>Device Manager → the device → Power Management → clear "Allow this device to wake the computer"</value></data>
+  <data name="Hint.WakeUnknown" xml:space="preserve"><value>Windows did not record the source</value></data>
+  <data name="Hint.Bsod" xml:space="preserve"><value>See what changed before it, drivers first</value></data>
+  <data name="Hint.PowerLoss" xml:space="preserve"><value>Power cut, reset button or a hard freeze</value></data>
+  <data name="Hint.PowerButton" xml:space="preserve"><value>The power button was held: did the PC freeze?</value></data>
+  <data name="Md.Title" xml:space="preserve"><value>Windows changes from {0} to {1}</value></data>
+  <data name="Md.Masked" xml:space="preserve"><value>secrets are masked</value></data>
+  <data name="Md.Power" xml:space="preserve"><value>Reboots and wakes</value></data>
+  <data name="Md.Updates" xml:space="preserve"><value>Windows Update</value></data>
+  <data name="Md.More" xml:space="preserve"><value>… {0} more lines cut</value></data>
+  <data name="Wu.Store" xml:space="preserve"><value>Microsoft Store: {0} apps updated</value></data>
+  <data name="Wu.Failed" xml:space="preserve"><value>failed</value></data>
+  <data name="Power.Title" xml:space="preserve"><value>Why the PC restarted or woke up</value></data>
+  <data name="Power.Days7" xml:space="preserve"><value>7 days</value></data>
+  <data name="Power.Days30" xml:space="preserve"><value>30 days</value></data>
+  <data name="Power.Days90" xml:space="preserve"><value>90 days</value></data>
+  <data name="Power.Col.Time" xml:space="preserve"><value>Time</value></data>
+  <data name="Power.Col.Event" xml:space="preserve"><value>Event</value></data>
+  <data name="Power.Col.Cause" xml:space="preserve"><value>Cause / initiator</value></data>
+  <data name="Power.Col.Hint" xml:space="preserve"><value>What to do</value></data>
+  <data name="Power.Before" xml:space="preserve"><value>What changed before this</value></data>
+  <data name="Power.WakeNow" xml:space="preserve"><value>Can wake the PC now</value></data>
+  <data name="Power.WakeTasks" xml:space="preserve"><value>Tasks with "Wake the computer"</value></data>
+  <data name="Power.WakeDevices" xml:space="preserve"><value>Devices</value></data>
+  <data name="Power.None" xml:space="preserve"><value>none</value></data>
+  <data name="Power.Empty" xml:space="preserve"><value>No restarts or wakes in this period.</value></data>
+  <data name="Set.Title" xml:space="preserve"><value>Change Ledger</value></data>
+  <data name="Set.Daily" xml:space="preserve"><value>Daily snapshot</value></data>
+  <data name="Set.Daily.Note" xml:space="preserve"><value>A scheduler task of your user runs the same exe without a window; a missed time runs at the next sign-in</value></data>
+  <data name="Set.Task" xml:space="preserve"><value>Scheduler task</value></data>
+  <data name="Set.Repair" xml:space="preserve"><value>Repair</value></data>
+  <data name="Set.Keep" xml:space="preserve"><value>Keep snapshots</value></data>
+  <data name="Set.Days" xml:space="preserve"><value>days</value></data>
+  <data name="Set.Mb" xml:space="preserve"><value>MB</value></data>
+  <data name="Set.Secrets" xml:space="preserve"><value>Extra secret variable names</value></data>
+  <data name="Set.Secrets.Note" xml:space="preserve"><value>Names with KEY, TOKEN, SECRET, PASS, PWD, CRED or AUTH are masked anyway; their values never reach the disk</value></data>
+  <data name="Set.Folder" xml:space="preserve"><value>Open data folder</value></data>
+  <data name="Set.Rebuild" xml:space="preserve"><value>Rebuild index</value></data>
+  <data name="Set.Delete" xml:space="preserve"><value>Delete task and all data</value></data>
+  <data name="Set.Usage" xml:space="preserve"><value>Now {0} MB in {1} snapshots · {2}</value></data>
+  <data name="Set.Delete.Confirm" xml:space="preserve"><value>Delete the scheduler task and {0} snapshots ({1} MB) in {2}? The daily snapshot will be turned off.</value></data>
+  <data name="Task.Ok" xml:space="preserve"><value>OK, daily at {0}</value></data>
+  <data name="Task.Missing" xml:space="preserve"><value>Not found</value></data>
+  <data name="Task.Stale" xml:space="preserve"><value>The path is out of date: the exe was moved. Press Repair.</value></data>
+  <data name="Task.Off" xml:space="preserve"><value>Off</value></data>
+  <data name="Task.Error" xml:space="preserve"><value>Could not read the Task Scheduler</value></data>
+  <data name="Task.LastRun" xml:space="preserve"><value>last run {0} ({1})</value></data>
+  <data name="Task.NotInstalled" xml:space="preserve"><value>This copy is not in {0}, so only Repair creates the task.</value></data>
+  <data name="Task.Failed" xml:space="preserve"><value>The scheduler task was not changed: {0}</value></data>
+  <data name="Snap.Busy" xml:space="preserve"><value>Another snapshot is running. Try again in a minute.</value></data>
+  <data name="Snap.First" xml:space="preserve"><value>The first snapshot is saved.</value></data>
+  <data name="Snap.Written" xml:space="preserve"><value>Snapshot saved: {0} changes since the previous one.</value></data>
+  <data name="Snap.Unchanged" xml:space="preserve"><value>Nothing changed since the last snapshot.</value></data>
+  <data name="Snap.Failed" xml:space="preserve"><value>The snapshot failed; details are in the log.</value></data>
+  <data name="Tray.Snapshot" xml:space="preserve"><value>Snapshot now</value></data>
+  <data name="Tray.Day" xml:space="preserve"><value>What changed in 24 hours</value></data>
+  <data name="Tray.Week" xml:space="preserve"><value>What changed in 7 days</value></data>
+  <data name="Tray.Why" xml:space="preserve"><value>Why it restarted or woke up</value></data>
+  <data name="Tray.Settings" xml:space="preserve"><value>Settings</value></data>
+  <data name="Tray.Tip" xml:space="preserve"><value>{0} · snapshot {1} · changes: {2}</value></data>
+  <data name="Demo.Wu1" xml:space="preserve"><value>2026-10 Cumulative Update for Windows 11 Insider Preview (26300.9512) (KB5070311)</value></data>
+  <data name="Demo.Wu2" xml:space="preserve"><value>Update for Microsoft Defender Antivirus antimalware platform - KB4052623 (Version 4.18.25090.3)</value></data>
+  <data name="Demo.Wu3" xml:space="preserve"><value>Windows Malicious Software Removal Tool x64 - v5.141 (KB890830)</value></data>
+  <data name="Demo.Planned" xml:space="preserve"><value>Operating System: Upgrade (Planned)</value></data>
+  <data name="Demo.Mouse" xml:space="preserve"><value>HID-compliant mouse (001)</value></data>
+  <data name="Demo.WakeTimer" xml:space="preserve"><value>The scheduled task "NT TASK\Microsoft\Windows\UpdateOrchestrator\Schedule Wake To Work" requested waking the computer.</value></data>
 </root>

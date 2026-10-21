@@ -1,10 +1,12 @@
 using System.Windows.Threading;
 using ChangeLedger.Features;
-using ChangeLedger.Shell;
 
 namespace ChangeLedger.Demo;
 
-/// <summary>--autoplay: a 6–8 s scenario for gif.ps1 (DispatcherTimer + list of steps). The app spec defines its own steps.</summary>
+/// <summary>
+/// --autoplay for gif.ps1 (spec §10): "what changed in 7 days" → the day with the red reboot → Drivers opens →
+/// Reboots → "What changed before this" on the BSOD row.
+/// </summary>
 public static class Autoplay
 {
     public static void Start(MainWindow w)
@@ -12,11 +14,16 @@ public static class Autoplay
         // Seconds after the window is on screen; gif.ps1 starts recording when --rect-file appears, ffmpeg needs ~1 s
         (double At, Action Do)[] steps =
         [
-            (2.0, () => MainPage.Items.Add(new(Loc.T("Demo.Backup"), @"D:\Backup\demo", false))),
-            (3.0, () => MainPage.Items[^1].On = true),
-            (4.0, () => MainPage.Items[2].On = true),
-            (5.5, () => w.Navigate("settings")),
-            (7.0, () => w.Navigate("main")),
+            (1.2, () => ChangesPage.Shown?.Preset(7)),
+            (2.4, () => ChangesPage.Shown?.PickDays(DateTime.Today.AddDays(-6), DateTime.Today.AddDays(-6))),
+            (3.6, () => ChangesPage.Shown?.ExpandOnly("drivers")),
+            (5.0, () => w.Navigate("power")),
+            (6.4, () =>
+            {
+                var bsod = DemoData.Power.First(p => p.Kind == PowerKind.Bsod).Utc;
+                ChangesPage.Request(bsod.AddDays(-7), bsod);
+                w.Navigate("changes");
+            }),
         ];
         var started = DateTime.UtcNow;
         var next = 0;
