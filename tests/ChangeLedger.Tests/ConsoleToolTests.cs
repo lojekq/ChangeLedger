@@ -27,10 +27,12 @@ public class ConsoleToolTests
     public async Task TimeoutKillsTheWholeTree()
     {
         var marker = $"127.{Random.Shared.Next(1, 255)}.{Random.Shared.Next(1, 255)}.{Random.Shared.Next(1, 255)}";
-        var run = Task.Run(() => ConsoleTool.Run("cmd.exe", ["/d", "/c", "ping", "-n", "30", marker], TimeSpan.FromSeconds(3)));
+        // A cold CI runner can take seconds to start cmd and ping, so the search must end well before the timeout kills them
+        var timeout = TimeSpan.FromSeconds(10);
+        var run = Task.Run(() => ConsoleTool.Run("cmd.exe", ["/d", "/c", "ping", "-n", "60", marker], timeout));
 
         Process? ping = null;
-        for (var sw = Stopwatch.StartNew(); ping is null && sw.Elapsed < TimeSpan.FromSeconds(3); await Task.Delay(100))
+        for (var sw = Stopwatch.StartNew(); ping is null && sw.Elapsed < timeout - TimeSpan.FromSeconds(2); await Task.Delay(100))
             ping = Process.GetProcessesByName("PING").FirstOrDefault(p => ProcessInfo.CommandLine(p.Id)?.Contains(marker) == true);
         Assert.IsNotNull(ping, "the grandchild never started");
 
