@@ -41,7 +41,8 @@
             <ui:TextBlock Text="→" FontTypography="BodyStrong" VerticalAlignment="Center" Margin="0,0,10,6" />
             <ui:TextBlock Text="B" FontTypography="BodyStrong" VerticalAlignment="Center" Margin="0,0,6,6" />
             <DatePicker x:Name="BDate" Width="140" SelectedDateFormat="Short" Margin="0,0,6,6" />
-            <ComboBox x:Name="BTime" Width="210" Margin="0,0,0,6" />
+            <ComboBox x:Name="BTime" Width="210" Margin="0,0,16,6" />
+            <ui:ToggleSwitch x:Name="StepsSwitch" Content="{l:T Changes.Steps}" Margin="0,0,0,6" />
         </WrapPanel>
 
         <TextBlock Grid.Row="2" x:Name="KeyText" TextWrapping="Wrap" Margin="0,2,0,8" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
@@ -94,6 +95,10 @@
                                                Visibility="{Binding Wake, Converter={StaticResource Vis}}" />
                                 <ui:SymbolIcon Symbol="ArrowDownload16" Margin="6,0,0,0" FontSize="14" Foreground="{DynamicResource AccentTextFillColorPrimaryBrush}"
                                                Visibility="{Binding Update, Converter={StaticResource Vis}}" />
+                                <ui:SymbolIcon Symbol="ErrorCircle16" Margin="6,0,0,0" FontSize="14" Foreground="{DynamicResource SystemFillColorCautionBrush}"
+                                               Visibility="{Binding Crash, Converter={StaticResource Vis}}" />
+                                <ui:SymbolIcon Symbol="Shield16" Margin="6,0,0,0" FontSize="14" Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                               Visibility="{Binding Shield, Converter={StaticResource Vis}}" />
                             </StackPanel>
                             <ui:TextBlock Text="{Binding Chips}" FontTypography="Caption" Appearance="Secondary" TextWrapping="Wrap">
                                 <ui:TextBlock.Style>
@@ -133,6 +138,9 @@
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.Resources>
+                        <DataTemplate DataType="{x:Type f:StepRow}">
+                            <ui:TextBlock Text="{Binding Text}" FontTypography="BodyStrong" Foreground="{DynamicResource AccentTextFillColorPrimaryBrush}" Margin="2,14,8,2" />
+                        </DataTemplate>
                         <DataTemplate DataType="{x:Type f:HeaderRow}">
                             <Border Background="{DynamicResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
                                     BorderThickness="1" CornerRadius="6" Padding="12,9" Margin="0,4,8,2" Cursor="Hand" MouseLeftButtonUp="Header_Click">
@@ -173,6 +181,7 @@
                                     <ContextMenu>
                                         <MenuItem Header="{l:T Changes.Copy}" Click="Copy_Click" />
                                         <MenuItem Header="{l:T Changes.CopyPath}" Click="CopyPath_Click" />
+                                        <MenuItem Header="{l:T Changes.HideSuch}" Click="HideSuch_Click" />
                                     </ContextMenu>
                                 </Grid.ContextMenu>
                                 <Grid.ColumnDefinitions>
@@ -188,6 +197,9 @@
                                                     <Setter Property="Foreground" Value="{DynamicResource SystemFillColorSuccessBrush}" />
                                                 </DataTrigger>
                                                 <DataTrigger Binding="{Binding Kind}" Value="-">
+                                                    <Setter Property="Foreground" Value="{DynamicResource SystemFillColorCriticalBrush}" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Kind}" Value="!">
                                                     <Setter Property="Foreground" Value="{DynamicResource SystemFillColorCriticalBrush}" />
                                                 </DataTrigger>
                                             </Style.Triggers>

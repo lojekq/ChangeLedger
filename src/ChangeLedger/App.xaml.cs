@@ -39,6 +39,7 @@ public partial class App : Application
 
         // App features: settings section, tray items, scheduler task, start-up snapshot
         SettingsPage.AppSection = () => new SettingsSection();
+        DiffEngine.SetUserRules(Settings.Current.IgnoreRules);
         RemoveData = () => { if (!a.Demo) TaskRegistration.Remove(); return null; };
         Exiting += Ledger.Cancel;
         if (!a.Demo && !AppInfo.IsElevated)
@@ -73,6 +74,7 @@ public partial class App : Application
             var items = TrayMenu.Items();
             Tray.Create(ShowMain, () => Quit(), items);
             TrayMenu.Attach(items);
+            Ledger.NotifyUnexpected();
         }
         SessionEnding += (_, _) => RaiseExiting();
         Updates.Found += (version, url) =>

@@ -26,7 +26,7 @@
   <data name="About.DataFolder" xml:space="preserve"><value>Настройки и логи</value></data>
   <data name="About.OpenDataFolder" xml:space="preserve"><value>Открыть папку</value></data>
   <data name="About.Remove" xml:space="preserve"><value>Удалить данные и автозапуск</value></data>
-  <data name="About.Remove.Note" xml:space="preserve"><value>Удаляет настройки, логи, автозапуск и ярлык в «Пуске», затем закрывает программу. Exe удалите сами.</value></data>
+  <data name="About.Remove.Note" xml:space="preserve"><value>Удаляет настройки, логи, снимки, задачу планировщика, автозапуск и ярлык в «Пуске», затем закрывает программу. Exe удалите сами.</value></data>
   <data name="About.Remove.Button" xml:space="preserve"><value>Удалить</value></data>
   <data name="About.Remove.Confirm" xml:space="preserve"><value>Удалить настройки, логи, автозапуск и ярлык и закрыть программу?</value></data>
   <data name="Update.Title" xml:space="preserve"><value>Есть обновление</value></data>
@@ -171,4 +171,19 @@
   <data name="Demo.Planned" xml:space="preserve"><value>Операционная система: обновление (запланированное)</value></data>
   <data name="Demo.Mouse" xml:space="preserve"><value>HID-совместимая мышь (001)</value></data>
   <data name="Demo.WakeTimer" xml:space="preserve"><value>Будет выполнено назначенное задание "NT TASK\Microsoft\Windows\UpdateOrchestrator\Schedule Wake To Work", запросившее вывод компьютера из спящего режима.</value></data>
+  <data name="Cat.firewall" xml:space="preserve"><value>Брандмауэр</value></data>
+  <data name="Cat.network" xml:space="preserve"><value>Сеть</value></data>
+  <data name="Cat.appx" xml:space="preserve"><value>Приложения Store</value></data>
+  <data name="Cat.defender" xml:space="preserve"><value>Исключения Defender</value></data>
+  <data name="Cat.crashes" xml:space="preserve"><value>Сбои</value></data>
+  <data name="Count.Events" xml:space="preserve"><value>событий: {0}</value></data>
+  <data name="Word.Off" xml:space="preserve"><value>выкл.</value></data>
+  <data name="Crash.Gpu" xml:space="preserve"><value>Сброс драйвера видеокарты (TDR)</value></data>
+  <data name="Changes.Steps" xml:space="preserve"><value>Все промежуточные</value></data>
+  <data name="Changes.HideSuch" xml:space="preserve"><value>Скрывать такие</value></data>
+  <data name="Set.Ignore" xml:space="preserve"><value>Скрытые изменения</value></data>
+  <data name="Set.Ignore.Note" xml:space="preserve"><value>По одному правилу в строке: категория|regex ключа. «Скрывать такие» в меню «Изменений» добавляет правило; «Показать скрытое» возвращает строки</value></data>
+  <data name="Set.Notify" xml:space="preserve"><value>Уведомлять о неожиданной перезагрузке</value></data>
+  <data name="Set.Notify.Note" xml:space="preserve"><value>Уведомление при запуске после BSOD, потери питания или удержания кнопки</value></data>
+  <data name="Notify.Unexpected" xml:space="preserve"><value>{0} в {1}. Что изменилось перед этим?</value></data>
 </root>

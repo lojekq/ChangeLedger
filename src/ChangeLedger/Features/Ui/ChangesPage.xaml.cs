@@ -44,9 +44,9 @@ public partial class ChangesPage
     List<KeyVersion> keys = [];
     string? error;
     Action? reapply;              // how the current range was chosen, re-run after the index changes
-    List<PowerEntry> power = [];
+    List<(IndexEntry From, IndexEntry To, Diff Diff)>? steps; // "All intermediate changes"
+    Journal journal = new([], [], [], []);
     List<WuEntry> updates = [];
-    List<DateTime> boots = [];
     readonly Dictionary<string, bool> expanded = [];
     readonly ObservableCollection<object> rows = [];
     bool syncing;
@@ -63,6 +63,7 @@ public partial class ChangesPage
         UpdateButton.Click += (_, _) => OpenUpdates();
         SearchBox.TextChanged += (_, _) => Render();
         HiddenSwitch.Click += (_, _) => Render();
+        StepsSwitch.Click += (_, _) => Compute();
         CopyButton.Click += (_, _) => CopyForAi();
         EmptySnapshot.Click += (_, _) => TrayMenu.SnapshotNow();
         Timeline.SelectionChanged += (_, _) => TimelinePicked();
@@ -101,7 +102,7 @@ public partial class ChangesPage
 
     static DateTime Utc(DateTime localDay) => DateTime.SpecifyKind(localDay, DateTimeKind.Local).ToUniversalTime();
 
-    /// <summary>Reboots, wakes and updates for the timeline icons; the System log is read once per index change.</summary>
+    /// <summary>Reboots, wakes, crashes, Defender exclusions and updates for the timeline; the logs are read once per index change.</summary>
     async void LoadJournal()
     {
         var idx = Ledger.Index;
@@ -109,16 +110,16 @@ public partial class ChangesPage
         var g = ++journalGeneration;
         var from = Utc(idx[0].T.ToLocalTime().Date);
         var to = DateTime.UtcNow;
-        var (p, u, bt) = await Task.Run(() => (Try(() => Ledger.Power(from, to)), Ledger.Updates(), Try(() => Ledger.Boots(from, to))));
+        var (j, u) = await Task.Run(() => (Read(from, to), Ledger.Updates()));
         if (g != journalGeneration) return;
-        (power, updates, boots) = (p, u, bt);
+        (journal, updates) = (j, u);
         BuildTimeline();
         Render();
 
-        static List<T> Try<T>(Func<List<T>> f)
+        static Journal Read(DateTime from, DateTime to)
         {
-            try { return f(); }
-            catch (Exception e) { Log.Warn("system log", e); return []; }
+            try { return Ledger.Journal(from, to); }
+            catch (Exception e) { Log.Warn("event logs", e); return new([], [], [], []); }
         }
     }
 
@@ -137,12 +138,17 @@ public partial class ChangesPage
                 var counts = new Dictionary<string, int>();
                 foreach (var e in idx.Where(e => e.T >= from && e.T < to))
                     foreach (var (k, v) in e.D) counts[k] = counts.GetValueOrDefault(k) + v;
-                var p = power.Where(x => x.Utc >= from && x.Utc < to).OrderBy(x => x.Utc).ToList();
-                var u = updates.Where(x => x.Utc >= from && x.Utc < to).OrderBy(x => x.Utc).ToList();
-                var reboots = p.Where(x => x.Kind != PowerKind.Wake).ToList();
-                var tip = string.Join("\n", p.Select(x => $"{x.Utc.ToLocalTime():HH:mm} {Words.PowerEvent(x)}").Concat(u.Select(x => $"{x.Utc.ToLocalTime():HH:mm} {Words.UpdateTitle(x)}")));
-                days.Add(new(d, Words.Day(d), Words.Chips(counts), reboots.Count > 0, reboots.Any(x => x.Unexpected), p.Any(x => x.Kind == PowerKind.Wake),
-                    u.Any(x => x.StoreCount == 0), tip.Length > 0 ? tip : null, counts.Count == 0 && p.Count == 0 && u.Count == 0));
+                var j = journal.Between(from, to.AddTicks(-1));
+                var u = updates.Where(x => x.Utc >= from && x.Utc < to).ToList();
+                var reboots = j.Power.Where(x => x.Kind != PowerKind.Wake).ToList();
+                var tip = string.Join("\n", j.Power.Select(x => (x.Utc, Text: Words.PowerEvent(x)))
+                    .Concat(u.Select(x => (x.Utc, Text: Words.UpdateTitle(x))))
+                    .Concat(j.Crashes.Select(x => (x.Utc, Text: Words.Row(x).Title)))
+                    .Concat(j.Defender.Select(x => (x.Utc, Text: $"Defender {x.Kind} {x.Path}")))
+                    .OrderBy(x => x.Utc).Select(x => $"{x.Utc.ToLocalTime():HH:mm} {x.Text}"));
+                days.Add(new(d, Words.Day(d), Words.Chips(counts), reboots.Count > 0, reboots.Any(x => x.Unexpected), j.Power.Any(x => x.Kind == PowerKind.Wake),
+                    u.Any(x => x.StoreCount == 0), j.Crashes.Count > 0, j.Defender.Count > 0, tip.Length > 0 ? tip : null,
+                    counts.Count == 0 && tip.Length == 0));
             }
         }
         syncing = true;
@@ -248,7 +254,7 @@ public partial class ChangesPage
     /// <summary>A = the last snapshot before the update, B = the first one after the next boot.</summary>
     (IndexEntry? Before, IndexEntry? After) AroundUpdate(WuEntry u)
     {
-        var boot = boots.FirstOrDefault(t => t > u.Utc);
+        var boot = journal.Boots.FirstOrDefault(t => t > u.Utc);
         return (Ledger.Index.LastOrDefault(e => e.T < u.Utc), Ledger.After(boot == default ? u.Utc : boot));
     }
 
@@ -283,19 +289,21 @@ public partial class ChangesPage
     async void Compute()
     {
         var g = ++generation;
-        (diff, error) = (null, null);
+        (diff, steps, error) = (null, null, null);
         if (a is not null && b is not null && a.F != b.F)
         {
             var (fa, fb) = (a.F, b.F);
+            var chain = StepsSwitch.IsChecked == true ? Ledger.Index.Where(e => e.T >= a.T && e.T <= b.T).ToList() : null;
             try
             {
-                var (d, k) = await Task.Run(() =>
+                var (d, k, st) = await Task.Run(() =>
                 {
                     var (sa, sb) = (Ledger.Load(fa), Ledger.Load(fb));
-                    return (DiffEngine.Compare(sa, sb), DiffEngine.KeyVersions(sa, sb));
+                    var st = chain?.Zip(chain.Skip(1)).Select(p => (p.First, p.Second, DiffEngine.Compare(Ledger.Load(p.First.F), Ledger.Load(p.Second.F)))).ToList();
+                    return (DiffEngine.Compare(sa, sb), DiffEngine.KeyVersions(sa, sb), st);
                 });
                 if (g != generation) return;
-                (diff, keys) = (d, k);
+                (diff, keys, steps) = (d, k, st);
             }
             catch (Exception e)
             {
@@ -313,12 +321,30 @@ public partial class ChangesPage
          || c.Props.Any(p => (p.Old ?? "").Contains(q, StringComparison.CurrentCultureIgnoreCase) || (p.New ?? "").Contains(q, StringComparison.CurrentCultureIgnoreCase))
          || (c.Path ?? []).Any(s => s.Element.Contains(q, StringComparison.CurrentCultureIgnoreCase)));
 
-    /// <summary>Visible categories with their rows, for the list and for "Copy for AI".</summary>
-    List<(CategoryDiff Cat, List<ChangeRow> Rows)> VisibleCategories()
+    /// <summary>A category block in the list: Key is unique (step prefix in "All intermediate changes"), Category its id.</summary>
+    sealed record Section(string Key, string Category, string Title, string? Note, List<ChangeRow> Rows, string? Step = null);
+
+    /// <summary>Visible sections: snapshot categories (net, or per step), then Defender exclusions and crashes from the logs for (A, B].</summary>
+    List<Section> Sections()
     {
         var q = SearchBox.Text?.Trim() ?? "";
-        return diff is null ? [] : [.. diff.Categories.Select(c => (c, c.Changes.Where(x => Visible(x, q)).Select(Words.Row).ToList()))
-            .Where(x => x.Item2.Count > 0 || x.c.NoDataIn is not null)];
+        var list = new List<Section>();
+        if (diff is null || a is null || b is null) return list;
+        void Add(Diff d, string prefix, string? step)
+        {
+            foreach (var c in d.Categories)
+            {
+                var r = c.Changes.Where(x => Visible(x, q)).Select(Words.Row).ToList();
+                if (r.Count > 0 || c.NoDataIn is not null) list.Add(new(prefix + c.Id, c.Id, Words.Header(c.Id, [.. r.Select(x => x.Change)]), Words.NoData(c), r, step));
+            }
+        }
+        if (steps is { Count: > 0 }) foreach (var (i, (f, t, d)) in steps.Index()) Add(d, $"{i}:", $"{Words.When(f.T)} → {Words.When(t.T)}");
+        else Add(diff, "", null);
+        var j = journal.Between(a.T.AddTicks(1), b.T);
+        bool Match(ChangeRow r) => q.Length == 0 || r.Title.Contains(q, StringComparison.CurrentCultureIgnoreCase) || (r.Secondary ?? "").Contains(q, StringComparison.CurrentCultureIgnoreCase);
+        foreach (var (id, r) in new[] { ("defender", j.Defender.Select(Words.Row).Where(Match).ToList()), ("crashes", j.Crashes.Select(Words.Row).Where(Match).ToList()) })
+            if (r.Count > 0) list.Add(new(id, id, Words.Header(id, [.. r.Select(x => x.Change)]), null, r));
+        return list;
     }
 
     List<string> Notes()
@@ -340,13 +366,13 @@ public partial class ChangesPage
         Banners.Children.Clear();
         KeyText.Inlines.Clear();
         var idx = Ledger.Index;
-        var cats = VisibleCategories();
+        var sections = Sections();
         string? empty =
             idx.Count == 0 ? Loc.T("Changes.NoSnapshots")
             : idx.Count == 1 ? Loc.T("Changes.FirstSnapshot")
             : a is null || b is null ? Loc.T("Changes.PickRange")
             : error is not null ? string.Format(Loc.T("Changes.Error"), error)
-            : a.F == b.F || diff is not null && cats.Count == 0 ? string.Format(Loc.T("Changes.None"), Words.When(a.T), Words.When(b.T))
+            : a.F == b.F || diff is not null && sections.Count == 0 ? string.Format(Loc.T("Changes.None"), Words.When(a.T), Words.When(b.T))
             : null;
         EmptyText.Text = empty ?? "";
         EmptyPanel.Visibility = empty is null ? Visibility.Collapsed : Visibility.Visible;
@@ -367,13 +393,16 @@ public partial class ChangesPage
             KeyText.Inlines.Add(new Run(k.New ?? "—") { FontWeight = FontWeights.SemiBold, Foreground = accent });
         }
 
-        var total = cats.Sum(c => c.Rows.Count);
-        foreach (var (cat, list) in cats)
+        var total = sections.Sum(c => c.Rows.Count);
+        string? step = null;
+        foreach (var sec in sections)
         {
-            var open = expanded.TryGetValue(cat.Id, out var x) ? x : list.Count <= 50 && total <= 300; // a feature update starts collapsed
-            var h = new HeaderRow(cat.Id, Words.Header(cat.Id, [.. list.Select(r => r.Change)]), Words.NoData(cat), list, open);
+            if (sec.Step is not null && sec.Step != step) rows.Add(new StepRow(step = sec.Step));
+            // a feature update starts collapsed; Store packages are collapsed by default
+            var open = expanded.TryGetValue(sec.Key, out var x) ? x : sec.Category != "appx" && sec.Rows.Count <= 50 && total <= 300;
+            var h = new HeaderRow(sec.Key, sec.Title, sec.Note, sec.Rows, open);
             rows.Add(h);
-            if (open) foreach (var r in list) rows.Add(r);
+            if (open) foreach (var r in sec.Rows) rows.Add(r);
         }
     }
 
@@ -414,12 +443,22 @@ public partial class ChangesPage
         if ((sender as FrameworkElement)?.DataContext is ChangeRow r) ToClipboard(Words.Path(r.Change));
     }
 
+    /// <summary>"Hide such": a settings rule for exactly this key; it goes under Show hidden like the built-in noise.</summary>
+    void HideSuch_Click(object sender, RoutedEventArgs e)
+    {
+        if ((sender as FrameworkElement)?.DataContext is not ChangeRow r || r.Change.Category is "defender" or "crashes") return;
+        Settings.Current.IgnoreRules.Add(DiffEngine.RuleFor(r.Change));
+        Settings.Save();
+        DiffEngine.SetUserRules(Settings.Current.IgnoreRules);
+        Compute();
+    }
+
     void CopyForAi()
     {
         if (a is null || b is null) return;
         var (from, to) = (a.T, b.T);
-        ToClipboard(Words.Markdown(from, to, [.. VisibleCategories().Select(c => (c.Cat.Id, c.Rows))], Notes(),
-            power.Where(p => p.Utc > from && p.Utc <= to), updates.Where(u => u.Utc > from && u.Utc <= to)));
+        ToClipboard(Words.Markdown(from, to, [.. Sections().Select(c => (c.Step is null ? Words.Category(c.Category) : $"{c.Step} · {Words.Category(c.Category)}", c.Rows))],
+            Notes(), journal.Between(from.AddTicks(1), to).Power, updates.Where(u => u.Utc > from && u.Utc <= to)));
         CopyText.Text = Loc.T("Changes.Copied");
         var t = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1.5) };
         t.Tick += (_, _) => { t.Stop(); CopyText.Text = Loc.T("Changes.CopyAi"); };
@@ -430,6 +469,7 @@ public partial class ChangesPage
     void DemoScene(string? scene)
     {
         var s = DemoData.Scene(scene);
+        StepsSwitch.IsChecked = s.Steps;
         IndexEntry? E(string f) => Ledger.Index.FirstOrDefault(e => e.F == f);
         if (s.Update is { } u) PickUpdate(u);
         else Select(E(s.A), E(s.B), () => DemoScene(scene));

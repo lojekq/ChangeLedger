@@ -79,7 +79,23 @@ public static partial class DiffEngine
 
     public static bool IsPath(string envKey) => envKey.EndsWith(@"\Path", StringComparison.OrdinalIgnoreCase);
 
-    static bool IsNoise(string category, string key) => Noise.Any(n => n.Category == category && n.Key.IsMatch(key));
+    static (string Category, Regex Key)[] user = [];
+
+    /// <summary>The user's "Hide such" rules from settings, one per line: "category|key regex" (case-insensitive). Bad lines are skipped.</summary>
+    public static void SetUserRules(IEnumerable<string> lines) => user = [.. lines.Select(ParseRule).OfType<(string, Regex)>()];
+
+    public static (string Category, Regex Key)? ParseRule(string line)
+    {
+        var i = line.IndexOf('|');
+        if (i <= 0) return null;
+        try { return (line[..i].Trim(), new Regex(line[(i + 1)..].Trim(), RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(100))); }
+        catch (ArgumentException) { return null; }
+    }
+
+    /// <summary>"Hide such" on a row: exactly this key in this category.</summary>
+    public static string RuleFor(Change c) => $"{c.Category}|^{Regex.Escape(c.Key)}$";
+
+    static bool IsNoise(string category, string key) => Noise.Concat(user).Any(n => n.Category == category && n.Key.IsMatch(key));
 
     /// <summary>Elements compared without case and trailing '\'; empty elements ignored. Order = the common elements' relative order.</summary>
     public static (List<PathStep> Steps, bool OrderChanged) PathDiff(string a, string b)

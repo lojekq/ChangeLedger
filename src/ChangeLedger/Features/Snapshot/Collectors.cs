@@ -25,7 +25,10 @@ public static partial class Collectors
         new("services", 1, Services),
         new("tasks", 1, Tasks),
         new("autostart", 1, Autostart),
+        new("firewall", 1, _ => Firewall()),
         new("env", 1, Env),
+        new("network", 1, _ => Network()),
+        new("appx", 1, _ => Appx()),
         new("wake", 1, _ => Wake()),
     ];
 
@@ -243,6 +246,97 @@ public static partial class Collectors
         Read("user", RegistryHive.CurrentUser, "Environment");
         Read("machine", RegistryHive.LocalMachine, @"SYSTEM\CurrentControlSet\Control\Session Manager\Environment");
         return list;
+    }
+
+    /// <summary>Local rules and GPO rules from the registry: the value name is the rule's stable ID.</summary>
+    static List<Item> Firewall()
+    {
+        var list = new List<Item>();
+        void Read(string scope, string path)
+        {
+            using var k = Open(RegistryHive.LocalMachine, path);
+            foreach (var id in k?.GetValueNames() ?? [])
+            {
+                var p = FirewallRule(Str(k, id) ?? "");
+                var name = p.GetValueOrDefault("Name") ?? id;
+                var item = Make($@"{scope}\{id}", name.StartsWith('@') ? Native.IndirectString(name) ?? id : name);
+                foreach (var (n, v) in p) item.P[n] = v;
+                list.Add(item);
+            }
+        }
+        Read("local", @"SYSTEM\CurrentControlSet\Services\SharedAccess\Parameters\FirewallPolicy\FirewallRules");
+        Read("gpo", @"SOFTWARE\Policies\Microsoft\WindowsFirewall\FirewallRules");
+        return list;
+    }
+
+    /// <summary>
+    /// "v2.33|Action=Allow|Active=TRUE|Dir=Out|RA4=LocalSubnet|RA4=10.0.0.0/8|Name=@FirewallAPI.dll,-32765|Desc=…|" → fields;
+    /// repeated keys are joined, the long descriptive Desc and EmbedCtxt are left out (they don't change what the rule does).
+    /// </summary>
+    public static SortedDictionary<string, string> FirewallRule(string data)
+    {
+        var p = new SortedDictionary<string, string>(StringComparer.Ordinal);
+        foreach (var part in data.Split('|', StringSplitOptions.RemoveEmptyEntries))
+        {
+            var eq = part.IndexOf('=');
+            if (eq <= 0) continue; // the "v2.33" version marker
+            var (n, v) = (part[..eq], part[(eq + 1)..]);
+            if (n is "Desc" or "EmbedCtxt") continue;
+            p[n] = p.TryGetValue(n, out var old) ? $"{old}, {v}" : v;
+        }
+        return p;
+    }
+
+    /// <summary>hosts entries, the user's proxy and the DNS servers of each adapter.</summary>
+    static List<Item> Network()
+    {
+        var list = new List<Item>();
+        var hosts = Path.Combine(Environment.SystemDirectory, @"drivers\etc\hosts");
+        if (File.Exists(hosts))
+            foreach (var line in File.ReadAllLines(hosts).Select(l => l.Split('#')[0].Trim()).Where(l => l.Length > 0))
+            {
+                var parts = line.Split((char[])[' ', '\t'], StringSplitOptions.RemoveEmptyEntries);
+                foreach (var host in parts.Skip(1)) list.Add(Make($@"hosts\{host}", host, ("Address", parts[0])));
+            }
+        using (var k = Open(RegistryHive.CurrentUser, @"Software\Microsoft\Windows\CurrentVersion\Internet Settings"))
+            list.Add(Make("proxy", "Proxy", ("ProxyEnable", Str(k, "ProxyEnable")), ("ProxyServer", Str(k, "ProxyServer")),
+                ("ProxyOverride", Str(k, "ProxyOverride")), ("AutoConfigURL", Str(k, "AutoConfigURL"))));
+        using var ifaces = Open(RegistryHive.LocalMachine, @"SYSTEM\CurrentControlSet\Services\Tcpip\Parameters\Interfaces");
+        foreach (var guid in ifaces?.GetSubKeyNames() ?? [])
+            Safe(() =>
+            {
+                using var k = ifaces!.OpenSubKey(guid);
+                var dns = Str(k, "NameServer");
+                var dhcp = Str(k, "DhcpNameServer");
+                if (string.IsNullOrEmpty(dns) && string.IsNullOrEmpty(dhcp)) return; // adapters that never had DNS
+                using var c = Open(RegistryHive.LocalMachine, $@"SYSTEM\CurrentControlSet\Control\Network\{{4D36E972-E325-11CE-BFC1-08002BE10318}}\{guid}\Connection");
+                list.Add(Make($@"dns\{guid}", Str(c, "Name") ?? guid, ("NameServer", dns), ("DhcpNameServer", dhcp)));
+            });
+        return list;
+    }
+
+    /// <summary>Store packages of the current user; the key leaves the version out, so an update reads as a version change.</summary>
+    static List<Item> Appx()
+    {
+        var list = new List<Item>();
+        using var root = Open(RegistryHive.CurrentUser, @"Software\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppModel\Repository\Packages");
+        foreach (var full in root?.GetSubKeyNames() ?? [])
+            Safe(() =>
+            {
+                if (AppxKey(full) is not var (key, version)) return;
+                using var k = root!.OpenSubKey(full);
+                var display = Str(k, "DisplayName");
+                var title = display is null ? key.Split('_')[0] : display.StartsWith('@') ? Native.IndirectString(display) ?? key.Split('_')[0] : display;
+                list.Add(Make(key, title, ("Version", version)));
+            });
+        return list;
+    }
+
+    /// <summary>"Microsoft.WindowsCalculator_11.2405.2.0_x64__8wekyb3d8bbwe" → ("Microsoft.WindowsCalculator_x64__8wekyb3d8bbwe", "11.2405.2.0").</summary>
+    public static (string Key, string Version)? AppxKey(string fullName)
+    {
+        var p = fullName.Split('_');
+        return p.Length == 5 ? ($"{p[0]}_{p[2]}_{p[3]}_{p[4]}", p[1]) : null;
     }
 
     /// <summary>

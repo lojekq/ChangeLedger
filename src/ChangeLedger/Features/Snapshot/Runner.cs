@@ -20,6 +20,7 @@ public static class Runner
         Log.Info($"snapshot {reason}: start");
         try { Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.Idle; } catch { }
         Settings.Load();
+        DiffEngine.SetUserRules(Settings.Current.IgnoreRules); // the index counts leave hidden changes out
         var result = RunResult.Failed;
         var worker = new Thread(() => result = Run(reason, CancellationToken.None)) { IsBackground = true }; // a hung COM call can't keep the process alive
         worker.Start();
@@ -41,6 +42,8 @@ public static class Runner
                 var snap = Collectors.Take(reason, new(SnapshotStore.Salt(state), Settings.Current.ExtraSecretNames), ct);
                 var hash = snap.Hash();
                 state.LastCheckUtc = snap.TakenUtc;
+                try { EventArchive.Append(state, Settings.Current.RetentionDays); }
+                catch (Exception e) { Log.Warn("event archive not updated", e); } // the snapshot itself still counts
                 var index = SnapshotStore.ReadIndex(); // entries whose file is gone are dropped
                 if (hash == state.LastHash && index.Count > 0 && index[^1].H == hash) // files deleted by hand → write again
                 {

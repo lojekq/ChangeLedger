@@ -20,7 +20,7 @@ public static class Autoplay
             (5.0, () => w.Navigate("power")),
             (6.4, () =>
             {
-                var bsod = DemoData.Power.First(p => p.Kind == PowerKind.Bsod).Utc;
+                var bsod = DemoData.Journal.Power.First(p => p.Kind == PowerKind.Bsod).Utc;
                 ChangesPage.Request(bsod.AddDays(-7), bsod);
                 w.Navigate("changes");
             }),

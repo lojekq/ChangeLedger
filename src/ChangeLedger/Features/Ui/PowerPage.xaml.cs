@@ -37,7 +37,7 @@ public partial class PowerPage
         WakeDevices.ItemsSource = devices.Count > 0 ? devices : [Loc.T("Power.None")];
 
         List<PowerEntry> entries;
-        try { entries = await Task.Run(() => Ledger.Power(from, to)); }
+        try { entries = await Task.Run(() => Ledger.Journal(from, to).Power); }
         catch (Exception e)
         {
             Log.Warn("system log", e);

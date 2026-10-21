@@ -19,6 +19,7 @@ public sealed class LedgerState
     public DateTime? LastCheckUtc { get; set; }
     public string? LastHash { get; set; }
     public string? Salt { get; set; }   // random 16 bytes for the masking hashes
+    public DateTime? LastEventUtc { get; set; }   // the newest event copied to events.jsonl
 }
 
 /// <summary>

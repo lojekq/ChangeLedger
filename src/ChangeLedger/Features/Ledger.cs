@@ -64,13 +64,16 @@ public static class Ledger
 
     public static Snapshot? Latest() => Index.Count > 0 ? Load(Index[^1].F) : null;
 
-    /// <summary>Reboots and wakes in [from, to]; boot sessions that started before <paramref name="fromUtc"/> are read too, to explain the first one.</summary>
-    public static List<PowerEntry> Power(DateTime fromUtc, DateTime toUtc) =>
-        [.. (Demo ? DemoData.Power : RebootClassifier.Classify(EventHistory.Read(fromUtc.AddDays(-2), toUtc))).Where(e => e.Utc >= fromUtc && e.Utc <= toUtc)];
-
-    public static List<DateTime> Boots(DateTime fromUtc, DateTime toUtc) =>
-        Demo ? [.. DemoData.Boots.Where(b => b >= fromUtc && b <= toUtc)]
-             : [.. EventHistory.Read(fromUtc, toUtc).Where(e => e.Is(EventHistory.KernelGeneral, 12)).Select(e => e.Utc).Order()];
+    /// <summary>
+    /// The logs for [from, to]: live events plus the copies in events.jsonl (the live log rotates); boot sessions that
+    /// started before <paramref name="fromUtc"/> are read too, to explain the first one. Call from Task.Run.
+    /// </summary>
+    public static Journal Journal(DateTime fromUtc, DateTime toUtc)
+    {
+        if (Demo) return DemoData.Journal.Between(fromUtc, toUtc);
+        var evs = EventHistory.ReadAll(fromUtc.AddDays(-2), toUtc).Concat(EventArchive.Read(fromUtc.AddDays(-2), toUtc)).DistinctBy(e => (e.Utc, e.Provider, e.Id));
+        return Features.Journal.Of(evs).Between(fromUtc, toUtc);
+    }
 
     static List<WuEntry>? updates;
 
@@ -129,4 +132,19 @@ public static class Ledger
     /// <summary>Latest index entry at or before <paramref name="utc"/>.</summary>
     public static IndexEntry? AtOrBefore(DateTime utc) => Index.LastOrDefault(e => e.T <= utc);
     public static IndexEntry? After(DateTime utc) => Index.FirstOrDefault(e => e.T > utc);
+
+    /// <summary>At start: a balloon when the last restart of the past day was a BSOD, a power loss or a held power button; once per event.</summary>
+    public static async void NotifyUnexpected()
+    {
+        var s = Settings.Current;
+        if (Demo || !s.NotifyUnexpected) return;
+        var now = DateTime.UtcNow;
+        PowerEntry? last;
+        try { last = await Task.Run(() => Journal(now.AddDays(-1), now).Power.FirstOrDefault(p => p.Kind != PowerKind.Wake)); } // newest first
+        catch (Exception e) { Log.Warn("unexpected restart check", e); return; }
+        if (last is not { Unexpected: true } || last.Utc <= (s.LastUnexpectedUtc ?? DateTime.MinValue)) return;
+        s.LastUnexpectedUtc = last.Utc;
+        Settings.Save();
+        Tray.Notify(AppInfo.DisplayName, string.Format(Loc.T("Notify.Unexpected"), Words.PowerEvent(last), Words.When(last.Utc)), "power");
+    }
 }

@@ -9,7 +9,7 @@ internal static partial class Native
     {
         const int Size = 1024;
         var buf = stackalloc char[Size];
-        return SHLoadIndirectString(source, buf, Size, 0) == 0 ? new string(buf) : null;
+        return SHLoadIndirectString(source, buf, Size, 0) == 0 && buf[0] != 0 ? new string(buf) : null;
     }
 
     [LibraryImport("shlwapi.dll", StringMarshalling = StringMarshalling.Utf16)]

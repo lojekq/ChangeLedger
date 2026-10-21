@@ -6,7 +6,10 @@ using ChangeLedger.Shell;
 namespace ChangeLedger.Features;
 
 /// <summary>A day in the timeline: chips with counts, icons for reboots, wakes and Windows updates.</summary>
-public sealed record DayRow(DateTime Day, string Label, string Chips, bool Reboot, bool Unexpected, bool Wake, bool Update, string? Tip, bool Empty);
+public sealed record DayRow(DateTime Day, string Label, string Chips, bool Reboot, bool Unexpected, bool Wake, bool Update, bool Crash, bool Shield, string? Tip, bool Empty);
+
+/// <summary>"All intermediate changes": the header of one step between two neighbouring snapshots.</summary>
+public sealed record StepRow(string Text);
 
 /// <summary>Category header in the diff list; click toggles the rows below.</summary>
 public sealed class HeaderRow(string id, string text, string? note, List<ChangeRow> rows, bool expanded) : INotifyPropertyChanged
@@ -29,7 +32,7 @@ public sealed class HeaderRow(string id, string text, string? note, List<ChangeR
 public sealed record ChangeRow(Change Change, string Kind, string Title, string? Secondary, IReadOnlyList<string> Lines)
 {
     public bool HasSecondary => Secondary is not null;
-    public string Glyph => Kind switch { "+" => "+", "-" => "−", _ => "~" };
+    public string Glyph => Kind switch { "+" => "+", "-" => "−", "!" => "!", _ => "~" };
 }
 
 /// <summary>Everything the pages and "Copy for AI" say about changes, in the UI language.</summary>
@@ -54,7 +57,7 @@ public static class Words
     public static string Counts(IEnumerable<Change> changes)
     {
         var parts = new List<string>();
-        foreach (var (kind, key) in new[] { ('+', "Count.Added"), ('-', "Count.Removed"), ('~', "Count.Changed") })
+        foreach (var (kind, key) in new[] { ('+', "Count.Added"), ('-', "Count.Removed"), ('~', "Count.Changed"), ('!', "Count.Events") })
             if (changes.Count(c => c.Kind == kind) is > 0 and var n) parts.Add(string.Format(Loc.T(key), n));
         return string.Join(", ", parts);
     }
@@ -81,6 +84,9 @@ public static class Words
             "tasks" => c.Key,
             "autostart" => Join(c.Key[..Math.Max(0, c.Key.LastIndexOf('\\'))], i["Command"]),
             "env" => DiffEngine.IsPath(c.Key) ? Scope(c.Key) : Join(Scope(c.Key), Cut(i["Value"])),
+            "firewall" => Join(i["Dir"], i["Action"], i["App"] ?? i["Svc"] ?? i["PFN"], i["Active"] == "FALSE" ? Loc.T("Word.Off") : null),
+            "network" => Join(i["Address"], i["NameServer"], i["DhcpNameServer"], i["ProxyServer"], i["AutoConfigURL"]),
+            "appx" => i["Version"],
             _ => null,
         };
         return string.IsNullOrEmpty(s) ? null : s;
@@ -114,6 +120,7 @@ public static class Words
             "drivers" => i?["InfPath"],
             "services" => i?["ImagePath"],
             "autostart" => i?["Command"],
+            "firewall" => i?["App"],
             _ => null,
         } ?? c.Key;
     }
@@ -144,7 +151,7 @@ public static class Words
     /// "Copy for AI": header with the range, lists per category, reboots and updates; at most ~300 lines.
     /// Values were masked before they reached the disk, so nothing secret can get here.
     /// </summary>
-    public static string Markdown(DateTime aUtc, DateTime bUtc, IReadOnlyList<(string Id, List<ChangeRow> Rows)> cats,
+    public static string Markdown(DateTime aUtc, DateTime bUtc, IReadOnlyList<(string Title, List<ChangeRow> Rows)> cats,
         IEnumerable<string> notes, IEnumerable<PowerEntry> power, IEnumerable<WuEntry> updates)
     {
         const int Max = 300;
@@ -155,9 +162,9 @@ public static class Words
             "",
         };
         lines.AddRange(notes.Select(n => $"> {n}"));
-        foreach (var (id, rows) in cats.Where(c => c.Rows.Count > 0))
+        foreach (var (title, rows) in cats.Where(c => c.Rows.Count > 0))
         {
-            lines.Add($"## {Category(id)} — {Counts(rows.Select(r => r.Change))}");
+            lines.Add($"## {title} — {Counts(rows.Select(r => r.Change))}");
             foreach (var r in rows)
             {
                 lines.Add($"- {r.Kind} **{r.Title}**{(r.Secondary is null ? "" : $" ({r.Secondary})")}");
@@ -178,6 +185,15 @@ public static class Words
         foreach (var l in lines.Take(Max)) sb.AppendLine(l);
         if (lines.Count > Max) sb.AppendLine(string.Format(Loc.T("Md.More"), lines.Count - Max));
         return sb.ToString();
+    }
+
+    public static ChangeRow Row(DefenderChange d) =>
+        new(new("defender", d.Kind, $"{d.Utc:o}{d.Path}", d.Path, [], false), d.Kind.ToString(), d.Path, When(d.Utc), []);
+
+    public static ChangeRow Row(AppCrash c)
+    {
+        var title = c.Gpu ? Loc.T("Crash.Gpu") : c.App ?? "?";
+        return new(new("crashes", '!', $"{c.Utc:o}{title}", title, [], false), "!", title, Join(When(c.Utc), c.Detail), []);
     }
 
     public static string UpdateTitle(WuEntry u) =>

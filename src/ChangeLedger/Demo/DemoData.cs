@@ -14,18 +14,20 @@ public static class DemoData
     public static LedgerState State { get; } = new();
     public static List<PowerEntry> Power { get; } = [];
     public static List<DateTime> Boots { get; } = [];
+    public static Journal Journal { get; private set; } = new([], [], [], []);
     public static List<WuEntry> Updates { get; } = [];
     public static (long Bytes, int Count) Usage => (37L * 1024 * 1024, 212);
 
     static string envBefore = "", envAfter = "";
 
-    public sealed record DemoScene(string A, string B, string[] Expand, WuEntry? Update);
+    public sealed record DemoScene(string A, string B, string[] Expand, WuEntry? Update, bool Steps = false);
 
     /// <summary>--page changes (hero: before/after the update), changes-apps, changes-path.</summary>
     public static DemoScene Scene(string? name) => name switch
     {
         "apps" => new(Index[0].F, Index[^1].F, ["apps", "autostart"], null),
         "path" => new(envBefore, envAfter, ["env"], null),
+        "steps" => new(Index[^4].F, Index[^1].F, ["drivers", "services", "apps", "autostart", "appx"], null, Steps: true),
         _ => new("", "", ["drivers", "services"], Updates.First(u => u.Title.Contains("KB5070311"))),
     };
 
@@ -42,6 +44,8 @@ public static class DemoData
         {
             App(x, "Ollama", "Ollama version 0.13.1", "0.13.1", "Ollama", @"C:\Users\demo\AppData\Local\Programs\Ollama\", hive: "HKCU");
             App(x, "Docker Desktop", "Docker Desktop", "4.49.0", "Docker Inc.", @"C:\Program Files\Docker\Docker");
+            Item(x, "firewall", @"local\{6F1C2E4B-3A8D-4C59-9E27-1B0D5A7C3F42}", "Docker Desktop Backend", ("Action", "Allow"), ("Active", "TRUE"), ("Dir", "In"),
+                ("App", @"C:\Program Files\Docker\Docker\resources\com.docker.backend.exe"), ("Name", "Docker Desktop Backend"), ("Profile", "Private"));
             x.Find("autostart", @"HKCU\Run\Discord")!.P["Enabled"] = "false";
         });
         envBefore = Index[^1].F;
@@ -64,7 +68,11 @@ public static class DemoData
                 ("ImagePath", @"""C:\Program Files\NVIDIA Corporation\NvContainer\nvcontainer.exe"" -s NvBroadcast.ContainerLocalSystem"),
                 ("ObjectName", "LocalSystem"), ("Start", "2"), ("Type", "16"));
         }, "startup");
-        s = Next(s, At(-3, 12), x => App(x, "PowerToys", "PowerToys (Preview) x64", "0.95.1", "Microsoft Corporation", @"C:\Users\demo\AppData\Local\PowerToys\", hive: "HKCU"));
+        s = Next(s, At(-3, 12), x =>
+        {
+            App(x, "PowerToys", "PowerToys (Preview) x64", "0.95.1", "Microsoft Corporation", @"C:\Users\demo\AppData\Local\PowerToys\", hive: "HKCU");
+            x.Find("appx", "Microsoft.WindowsTerminal_x64__8wekyb3d8bbwe")!.P["Version"] = "1.23.11132.0";
+        });
         Next(s, At(-1, 12), x =>
         {
             Item(x, "autostart", @"HKCU\Run\PowerToys", "PowerToys", ("Command", @"C:\Users\demo\AppData\Local\PowerToys\PowerToys.exe"), ("Enabled", "true"));
@@ -92,6 +100,8 @@ public static class DemoData
         ]);
         Power.Sort((x, y) => y.Utc.CompareTo(x.Utc));
         Boots.AddRange([At(-20, 14, 7), At(-11, 9, 2), At(-6, 3, 26), At(-6, 21, 41)]);
+        Journal = new(Power, [new(At(-17, 15, 20), '+', @"Paths\C:\Users\demo\Games")],
+            [new(At(-6, 21, 36), false, "dota2.exe 7.39.2", "nvwgf2umx.dll · 0xc0000005"), new(At(-6, 21, 38), true)], Boots);
     }
 
     static Snapshot Next(Snapshot prev, DateTime utc, Action<Snapshot> change, string reason = "scheduled")
@@ -169,6 +179,15 @@ public static class DemoData
 
         Item(s, "wake", Loc.T("Demo.Mouse"), Loc.T("Demo.Mouse"));
         Item(s, "wake", "Intel(R) Ethernet Controller I226-V", "Intel(R) Ethernet Controller I226-V");
+
+        Item(s, "firewall", @"local\{2B6E8E0C-5D41-4F7A-8C3B-9A1E6D0F4B27}", "Steam", ("Action", "Allow"), ("Active", "TRUE"), ("Dir", "In"),
+            ("App", @"C:\Program Files (x86)\Steam\steam.exe"), ("Name", "Steam"), ("Profile", "Private"));
+        Item(s, "firewall", @"local\RemoteAssistance-Out-TCP", "Remote Assistance (TCP-Out)", ("Action", "Allow"), ("Active", "TRUE"), ("Dir", "Out"),
+            ("App", @"%SystemRoot%\system32\msra.exe"), ("Name", "@FirewallAPI.dll,-33007"), ("Profile", "Public"), ("Protocol", "6"));
+        Item(s, "network", "proxy", "Proxy", ("ProxyEnable", "0"));
+        Item(s, "network", @"dns\{8D2F4A61-0C7E-4B39-A5D2-6E1F9B3C7A40}", "Ethernet", ("DhcpNameServer", "192.168.1.1"));
+        Item(s, "appx", "Microsoft.WindowsTerminal_x64__8wekyb3d8bbwe", "Windows Terminal", ("Version", "1.22.10731.0"));
+        Item(s, "appx", "Microsoft.WindowsCalculator_x64__8wekyb3d8bbwe", "Windows Calculator", ("Version", "11.2508.4.0"));
         return s;
     }
 }

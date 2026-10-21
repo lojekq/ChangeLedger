@@ -22,7 +22,17 @@ public partial class SettingsSection
         DaysBox.Value = s.RetentionDays;
         MbBox.Value = s.MaxStorageMb;
         SecretsBox.Text = string.Join(", ", s.ExtraSecretNames);
+        IgnoreBox.Text = string.Join(Environment.NewLine, s.IgnoreRules);
+        NotifySwitch.IsChecked = s.NotifyUnexpected;
         Refresh();
+
+        IgnoreBox.LostFocus += (_, _) =>
+        {
+            s.IgnoreRules = [.. (IgnoreBox.Text ?? "").Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)];
+            Settings.Save();
+            DiffEngine.SetUserRules(s.IgnoreRules);
+        };
+        NotifySwitch.Click += (_, _) => { s.NotifyUnexpected = NotifySwitch.IsChecked == true; Settings.Save(); };
 
         TimeBox.SelectionChanged += (_, _) =>
         {
