@@ -1,0 +1,34 @@
+name: Bug report
+description: Something does not work as expected
+labels: [bug]
+body:
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: About → Version, e.g. 0.1.0
+    validations: { required: true }
+  - type: input
+    id: windows
+    attributes:
+      label: Windows build
+      description: Run `winver`, e.g. Windows 11 24H2 (26100.4061)
+    validations: { required: true }
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: "1. ...\n2. ...\n3. ..."
+    validations: { required: true }
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected and actual result
+    validations: { required: true }
+  - type: textarea
+    id: logs
+    attributes:
+      label: Crash file or log
+      description: >
+        Attach the newest file from %APPDATA%\TrayApp\crash (or \logs).
+        Check it first for personal paths or names and remove them.

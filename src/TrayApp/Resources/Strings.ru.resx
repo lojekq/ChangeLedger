@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Tray.Open" xml:space="preserve"><value>Открыть</value></data>
+  <data name="Tray.Exit" xml:space="preserve"><value>Выход</value></data>
+  <data name="Tray.Hidden" xml:space="preserve"><value>Программа продолжает работать в области уведомлений. Чтобы выйти, щёлкните значок правой кнопкой и выберите «Выход».</value></data>
+  <data name="Page.Main" xml:space="preserve"><value>Главная</value></data>
+  <data name="Page.Settings" xml:space="preserve"><value>Настройки</value></data>
+  <data name="Page.About" xml:space="preserve"><value>О программе</value></data>
+  <data name="Settings.Language" xml:space="preserve"><value>Язык</value></data>
+  <data name="Settings.Restart" xml:space="preserve"><value>Перезапустить</value></data>
+  <data name="Settings.System" xml:space="preserve"><value>Как в системе</value></data>
+  <data name="Settings.Theme" xml:space="preserve"><value>Тема</value></data>
+  <data name="Settings.Light" xml:space="preserve"><value>Светлая</value></data>
+  <data name="Settings.Dark" xml:space="preserve"><value>Тёмная</value></data>
+  <data name="Settings.Autostart" xml:space="preserve"><value>Запускать вместе с Windows</value></data>
+  <data name="Settings.Autostart.DisabledByUser" xml:space="preserve"><value>Выключено в Диспетчере задач → «Автозагрузка». Включите там.</value></data>
+  <data name="Settings.StartMenu" xml:space="preserve"><value>Ярлык в меню «Пуск»</value></data>
+  <data name="Settings.Updates" xml:space="preserve"><value>Проверять обновления</value></data>
+  <data name="Settings.Updates.Note" xml:space="preserve"><value>Раз в день спрашивает у GitHub о новом релизе. Ничего не скачивает.</value></data>
+  <data name="About.Version" xml:space="preserve"><value>Версия</value></data>
+  <data name="About.Links" xml:space="preserve"><value>Ссылки</value></data>
+  <data name="About.Issues" xml:space="preserve"><value>Сообщить о проблеме</value></data>
+  <data name="About.DataFolder" xml:space="preserve"><value>Настройки и логи</value></data>
+  <data name="About.OpenDataFolder" xml:space="preserve"><value>Открыть папку</value></data>
+  <data name="About.Remove" xml:space="preserve"><value>Удалить данные и автозапуск</value></data>
+  <data name="About.Remove.Note" xml:space="preserve"><value>Удаляет настройки, логи, автозапуск и ярлык в «Пуске», затем закрывает программу. Exe удалите сами.</value></data>
+  <data name="About.Remove.Button" xml:space="preserve"><value>Удалить</value></data>
+  <data name="About.Remove.Confirm" xml:space="preserve"><value>Удалить настройки, логи, автозапуск и ярлык и закрыть программу?</value></data>
+  <data name="Update.Title" xml:space="preserve"><value>Есть обновление</value></data>
+  <data name="Update.Message" xml:space="preserve"><value>Доступна версия {0}.</value></data>
+  <data name="Update.Open" xml:space="preserve"><value>Страница релиза</value></data>
+  <data name="Elevated.Title" xml:space="preserve"><value>Запущено от администратора</value></data>
+  <data name="Elevated.Message" xml:space="preserve"><value>Программе не нужны права администратора. Перезапустите её обычным способом.</value></data>
+  <data name="Crash.Message" xml:space="preserve"><value>{0} аварийно завершилась.
+
+Лог ошибки: {1}
+
+Открыть папку?</value></data>
+  <data name="Hotkey.Placeholder" xml:space="preserve"><value>Нажмите сочетание клавиш</value></data>
+  <data name="Hotkey.Busy" xml:space="preserve"><value>Занято другой программой</value></data>
+  <data name="Hotkey.Failed" xml:space="preserve"><value>Не удалось зарегистрировать</value></data>
+  <data name="Sample.Hotkey" xml:space="preserve"><value>Сочетание клавиш для окна</value></data>
+  <data name="Main.Title" xml:space="preserve"><value>Задачи</value></data>
+  <data name="Main.Subtitle" xml:space="preserve"><value>Пример страницы шаблона. Замените её страницами программы.</value></data>
+  <data name="Main.Empty" xml:space="preserve"><value>Пока пусто.</value></data>
+  <data name="Demo.Build" xml:space="preserve"><value>Сборка проекта</value></data>
+  <data name="Demo.Dataset" xml:space="preserve"><value>Загрузка датасета</value></data>
+  <data name="Demo.Report" xml:space="preserve"><value>Отчёт для Alex</value></data>
+  <data name="Demo.Daily" xml:space="preserve"><value>каждый день в 18:00</value></data>
+  <data name="Demo.Backup" xml:space="preserve"><value>Ночная копия</value></data>
+</root>

@@ -1,0 +1,42 @@
+<Page x:Class="TrayApp.Shell.AboutPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+      xmlns:l="clr-namespace:TrayApp.Shell">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="24,12,24,24" MaxWidth="900">
+            <ui:TextBlock FontTypography="Title" Foreground="{DynamicResource TextFillColorPrimaryBrush}" Text="{l:T Page.About}" Margin="0,0,0,16" />
+
+            <ui:Card Margin="0,0,0,4">
+                <StackPanel Orientation="Horizontal">
+                    <Image x:Name="AppIcon" Width="48" Height="48" Margin="0,0,16,0" />
+                    <StackPanel VerticalAlignment="Center">
+                        <ui:TextBlock FontTypography="Subtitle" Text="{x:Static l:AppInfo.DisplayName}" />
+                        <ui:TextBlock x:Name="VersionText" Appearance="Secondary" />
+                    </StackPanel>
+                </StackPanel>
+            </ui:Card>
+
+            <ui:CardControl Header="{l:T About.Links}" Icon="{ui:SymbolIcon Link24}" Margin="0,0,0,4">
+                <StackPanel Orientation="Horizontal">
+                    <ui:HyperlinkButton x:Name="RepoLink" Content="GitHub" />
+                    <ui:HyperlinkButton x:Name="IssuesLink" Content="{l:T About.Issues}" />
+                </StackPanel>
+            </ui:CardControl>
+
+            <ui:CardControl Header="{l:T About.DataFolder}" Icon="{ui:SymbolIcon Folder24}" Margin="0,0,0,4">
+                <ui:Button x:Name="OpenDataButton" Content="{l:T About.OpenDataFolder}" />
+            </ui:CardControl>
+
+            <ui:CardControl Icon="{ui:SymbolIcon Delete24}" Margin="0,0,0,4">
+                <ui:CardControl.Header>
+                    <StackPanel>
+                        <ui:TextBlock Text="{l:T About.Remove}" />
+                        <ui:TextBlock Text="{l:T About.Remove.Note}" FontTypography="Caption" Appearance="Secondary" TextWrapping="Wrap" />
+                    </StackPanel>
+                </ui:CardControl.Header>
+                <ui:Button x:Name="RemoveButton" Content="{l:T About.Remove.Button}" />
+            </ui:CardControl>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

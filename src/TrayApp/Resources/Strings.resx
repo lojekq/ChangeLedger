@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Tray.Open" xml:space="preserve"><value>Open</value></data>
+  <data name="Tray.Exit" xml:space="preserve"><value>Exit</value></data>
+  <data name="Tray.Hidden" xml:space="preserve"><value>Still running in the notification area. To quit, right-click the icon and choose Exit.</value></data>
+  <data name="Page.Main" xml:space="preserve"><value>Home</value></data>
+  <data name="Page.Settings" xml:space="preserve"><value>Settings</value></data>
+  <data name="Page.About" xml:space="preserve"><value>About</value></data>
+  <data name="Settings.Language" xml:space="preserve"><value>Language</value></data>
+  <data name="Settings.Restart" xml:space="preserve"><value>Restart to apply</value></data>
+  <data name="Settings.System" xml:space="preserve"><value>Use system setting</value></data>
+  <data name="Settings.Theme" xml:space="preserve"><value>Theme</value></data>
+  <data name="Settings.Light" xml:space="preserve"><value>Light</value></data>
+  <data name="Settings.Dark" xml:space="preserve"><value>Dark</value></data>
+  <data name="Settings.Autostart" xml:space="preserve"><value>Start with Windows</value></data>
+  <data name="Settings.Autostart.DisabledByUser" xml:space="preserve"><value>Turned off in Task Manager → Startup apps. Turn it on there.</value></data>
+  <data name="Settings.StartMenu" xml:space="preserve"><value>Start menu shortcut</value></data>
+  <data name="Settings.Updates" xml:space="preserve"><value>Check for updates</value></data>
+  <data name="Settings.Updates.Note" xml:space="preserve"><value>Once a day asks GitHub about a new release. Nothing is downloaded.</value></data>
+  <data name="About.Version" xml:space="preserve"><value>Version</value></data>
+  <data name="About.Links" xml:space="preserve"><value>Links</value></data>
+  <data name="About.Issues" xml:space="preserve"><value>Report a problem</value></data>
+  <data name="About.DataFolder" xml:space="preserve"><value>Settings and logs</value></data>
+  <data name="About.OpenDataFolder" xml:space="preserve"><value>Open folder</value></data>
+  <data name="About.Remove" xml:space="preserve"><value>Remove data and autostart</value></data>
+  <data name="About.Remove.Note" xml:space="preserve"><value>Deletes settings, logs, autostart and the Start menu shortcut, then exits. Delete the exe yourself.</value></data>
+  <data name="About.Remove.Button" xml:space="preserve"><value>Remove</value></data>
+  <data name="About.Remove.Confirm" xml:space="preserve"><value>Delete settings, logs, autostart and the shortcut, and exit?</value></data>
+  <data name="Update.Title" xml:space="preserve"><value>Update available</value></data>
+  <data name="Update.Message" xml:space="preserve"><value>Version {0} is available.</value></data>
+  <data name="Update.Open" xml:space="preserve"><value>Release page</value></data>
+  <data name="Elevated.Title" xml:space="preserve"><value>Running as administrator</value></data>
+  <data name="Elevated.Message" xml:space="preserve"><value>This app does not need administrator rights. Restart it the usual way.</value></data>
+  <data name="Crash.Message" xml:space="preserve"><value>{0} has crashed and closed.
+
+Crash log: {1}
+
+Open the folder?</value></data>
+  <data name="Hotkey.Placeholder" xml:space="preserve"><value>Press a key combination</value></data>
+  <data name="Hotkey.Busy" xml:space="preserve"><value>Taken by another program</value></data>
+  <data name="Hotkey.Failed" xml:space="preserve"><value>Could not register</value></data>
+  <data name="Sample.Hotkey" xml:space="preserve"><value>Hotkey to show the window</value></data>
+  <data name="Main.Title" xml:space="preserve"><value>Tasks</value></data>
+  <data name="Main.Subtitle" xml:space="preserve"><value>Sample page of the template. Replace it with the app's own pages.</value></data>
+  <data name="Main.Empty" xml:space="preserve"><value>Nothing here yet.</value></data>
+  <data name="Demo.Build" xml:space="preserve"><value>Project build</value></data>
+  <data name="Demo.Dataset" xml:space="preserve"><value>Dataset download</value></data>
+  <data name="Demo.Report" xml:space="preserve"><value>Report for Alex</value></data>
+  <data name="Demo.Daily" xml:space="preserve"><value>every day at 6 PM</value></data>
+  <data name="Demo.Backup" xml:space="preserve"><value>Nightly backup</value></data>
+</root>

@@ -1,0 +1,57 @@
+<Page x:Class="TrayApp.Shell.SettingsPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+      xmlns:l="clr-namespace:TrayApp.Shell">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="24,12,24,24" MaxWidth="900" HorizontalAlignment="Stretch">
+            <ui:TextBlock FontTypography="Title" Foreground="{DynamicResource TextFillColorPrimaryBrush}" Text="{l:T Page.Settings}" Margin="0,0,0,16" />
+
+            <ui:CardControl Header="{l:T Settings.Language}" Icon="{ui:SymbolIcon LocalLanguage24}" Margin="0,0,0,4">
+                <StackPanel Orientation="Horizontal">
+                    <ui:Button x:Name="RestartButton" Content="{l:T Settings.Restart}" Appearance="Primary" Margin="0,0,8,0" Visibility="Collapsed" />
+                    <ComboBox x:Name="LanguageBox" MinWidth="160">
+                        <ComboBoxItem Tag="system" Content="{l:T Settings.System}" />
+                        <ComboBoxItem Tag="en" Content="English" />
+                        <ComboBoxItem Tag="ru" Content="Русский" />
+                    </ComboBox>
+                </StackPanel>
+            </ui:CardControl>
+
+            <ui:CardControl Header="{l:T Settings.Theme}" Icon="{ui:SymbolIcon DarkTheme24}" Margin="0,0,0,4">
+                <ComboBox x:Name="ThemeBox" MinWidth="160">
+                    <ComboBoxItem Tag="system" Content="{l:T Settings.System}" />
+                    <ComboBoxItem Tag="light" Content="{l:T Settings.Light}" />
+                    <ComboBoxItem Tag="dark" Content="{l:T Settings.Dark}" />
+                </ComboBox>
+            </ui:CardControl>
+
+            <ui:CardControl Icon="{ui:SymbolIcon Rocket24}" Margin="0,0,0,4">
+                <ui:CardControl.Header>
+                    <StackPanel>
+                        <ui:TextBlock Text="{l:T Settings.Autostart}" />
+                        <ui:TextBlock x:Name="AutostartNote" FontTypography="Caption" Appearance="Secondary" TextWrapping="Wrap" />
+                    </StackPanel>
+                </ui:CardControl.Header>
+                <ui:ToggleSwitch x:Name="AutostartSwitch" />
+            </ui:CardControl>
+
+            <ui:CardControl Header="{l:T Settings.StartMenu}" Icon="{ui:SymbolIcon Apps24}" Margin="0,0,0,4">
+                <ui:ToggleSwitch x:Name="StartMenuSwitch" />
+            </ui:CardControl>
+
+            <ui:CardControl Icon="{ui:SymbolIcon ArrowSync24}" Margin="0,0,0,4">
+                <ui:CardControl.Header>
+                    <StackPanel>
+                        <ui:TextBlock Text="{l:T Settings.Updates}" />
+                        <ui:TextBlock Text="{l:T Settings.Updates.Note}" FontTypography="Caption" Appearance="Secondary" TextWrapping="Wrap" />
+                    </StackPanel>
+                </ui:CardControl.Header>
+                <ui:ToggleSwitch x:Name="UpdatesSwitch" />
+            </ui:CardControl>
+
+            <!-- The app's own section: SettingsPage.AppSection -->
+            <ContentPresenter x:Name="AppSectionHost" Margin="0,16,0,0" />
+        </StackPanel>
+    </ScrollViewer>
+</Page>

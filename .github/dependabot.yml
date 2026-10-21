@@ -1,0 +1,11 @@
+version: 2
+updates:
+  # cooldown: only versions at least 2 weeks old (00-shared §2.1)
+  - package-ecosystem: nuget
+    directory: /
+    schedule: { interval: monthly }
+    cooldown: { default-days: 14 }
+  - package-ecosystem: github-actions
+    directory: /
+    schedule: { interval: monthly }
+    cooldown: { default-days: 14 }

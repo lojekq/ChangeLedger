@@ -1,0 +1,30 @@
+<Page x:Class="TrayApp.Features.MainPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+      xmlns:l="clr-namespace:TrayApp.Shell"
+      xmlns:f="clr-namespace:TrayApp.Features">
+    <!-- Sample page of the template: replace with the app's own pages -->
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="24,12,24,24" MaxWidth="900">
+            <ui:TextBlock FontTypography="Title" Foreground="{DynamicResource TextFillColorPrimaryBrush}" Text="{l:T Main.Title}" />
+            <ui:TextBlock Appearance="Secondary" Text="{l:T Main.Subtitle}" Margin="0,4,0,16" TextWrapping="Wrap" />
+            <ui:TextBlock x:Name="EmptyText" Appearance="Tertiary" Text="{l:T Main.Empty}" />
+            <ItemsControl ItemsSource="{x:Static f:MainPage.Items}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="{x:Type f:SampleItem}">
+                        <ui:CardControl Margin="0,0,0,4" Icon="{ui:SymbolIcon Clock24}">
+                            <ui:CardControl.Header>
+                                <StackPanel>
+                                    <ui:TextBlock Text="{Binding Name}" FontTypography="BodyStrong" />
+                                    <ui:TextBlock Text="{Binding Detail}" FontTypography="Caption" Appearance="Secondary" />
+                                </StackPanel>
+                            </ui:CardControl.Header>
+                            <ui:ToggleSwitch IsChecked="{Binding On}" />
+                        </ui:CardControl>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </StackPanel>
+    </ScrollViewer>
+</Page>
