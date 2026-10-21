@@ -27,11 +27,12 @@ A second page explains every restart and wake-up from the Windows logs: who, whe
 
 ## Features
 
-- **Daily snapshots** — apps, drivers, services, scheduled tasks, startup items, environment variables with PATH, wake devices; no admin rights, everything stays on your PC.
-- **Any two days** — a timeline and a diff by category, "was → now" for every property.
+- **Daily snapshots** — apps, drivers, services, scheduled tasks, startup items, firewall rules, environment variables with PATH, hosts, proxy and DNS, Store apps, wake devices; no admin rights, everything stays on your PC.
+- **Any two days** — a timeline and a diff by category, "was → now" for every property; the net difference or every step in between.
 - **Before and after a Windows update** — in one click.
-- **Why it restarted or woke up** — planned restart, BSOD, power loss, a held power button; a task timer or a device, with what to turn off.
-- **Private and read-only** — secrets are masked, no network, nothing in Windows is changed.
+- **Why it restarted or woke up** — planned restart, BSOD, power loss, a held power button; a task timer or a device, with what to turn off; a notification after an unexpected restart.
+- **Crashes and Defender on the same timeline** — app crashes, GPU driver resets and changes of Defender exclusions next to what changed.
+- **Private and read-only** — secrets are masked, no network, nothing in Windows is changed; noisy lines go away with **Hide such**.
 - **Copy for AI** — the diff as Markdown for Claude or a local model.
 
 ## See it in action
@@ -42,7 +43,7 @@ A second page explains every restart and wake-up from the Windows logs: who, whe
 
 A Task Scheduler task of your own user runs the same exe once a day without a window (`ChangeLedger.exe --snapshot`).
 It reads the registry and the Task Scheduler, keeps the result as compressed JSON and writes a new file only if something changed.
-Restarts and wake-ups are read straight from the Windows System log, so they need no snapshots.
+Restarts, wake-ups, crashes and Defender exclusion changes are read from the Windows logs; every snapshot also copies them to `events.jsonl`, so the history outlives the rotation of the logs.
 
 Why not Reliability Monitor or Autoruns? Reliability Monitor does not see drivers, services or PATH.
 Autoruns shows what starts now, but not what it was yesterday.
@@ -53,6 +54,7 @@ Autoruns shows what starts now, but not what it was yesterday.
 |---|---|---|
 | Apps and startup | ![Apps and startup, light](docs/changes-apps-light-en.png) | ![Apps and startup, dark](docs/changes-apps-dark-en.png) |
 | PATH and variables | ![PATH, light](docs/changes-path-light-en.png) | ![PATH, dark](docs/changes-path-dark-en.png) |
+| All intermediate changes | ![Steps, light](docs/changes-steps-light-en.png) | ![Steps, dark](docs/changes-steps-dark-en.png) |
 | Reboots and wakes | ![Reboots, light](docs/power-light-en.png) | ![Reboots, dark](docs/power-dark-en.png) |
 | Settings | ![Settings, light](docs/settings-light-en.png) | ![Settings, dark](docs/settings-dark-en.png) |
 
@@ -78,6 +80,8 @@ Turn on **Start with Windows** in Settings: then a snapshot also follows every r
 | Daily snapshot | on, 12:00 | The task runs a snapshot every day; if the PC was off, it runs at the next sign-in |
 | Keep snapshots | 365 days, 500 MB | Older and extra snapshots are deleted; the two newest never are |
 | Extra secret variable names | none | More environment variables to mask; names with KEY, TOKEN, SECRET, PASS, PWD, CRED or AUTH are always masked |
+| Hidden changes | none | One rule per line, `category\|key regex`; **Hide such** in the row menu adds one, **Show hidden** brings the lines back |
+| Notify after an unexpected restart | on | A notification at start after a BSOD, a power loss or a held power button |
 | Language, theme | Windows | English or Russian (after a restart), light or dark |
 | Start with Windows | off | Starts minimized to the tray; 2 minutes after the start it takes a snapshot if the last one is over an hour old |
 | Start menu shortcut | on when the exe is in `%LOCALAPPDATA%\Programs\ChangeLedger\` | A shortcut in the Start menu |
@@ -105,7 +109,7 @@ Please report it to your antivirus vendor and open an issue with the detection n
 <details><summary>I see changes I did not make</summary>
 
 Windows and updaters change things on their own: Edge and Office tasks, services that switch their start type.
-Known noise is hidden; **Show hidden** brings it back. If something keeps showing up for nothing, open an issue with the line from **Copy**.
+Known noise is hidden; right-click a line → **Hide such** hides more, **Show hidden** brings everything back. If something keeps showing up for nothing, open an issue with the line from **Copy**.
 </details>
 
 <details><summary>Why no snapshot when I run it as administrator?</summary>
