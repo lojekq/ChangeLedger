@@ -8,6 +8,7 @@ param(
   [switch]$Scene,
   [int]$X = 1080, [int]$Y = 344, [int]$W = 1280, [int]$H = 720,
   [int]$Seconds = 8,
+  [string]$Size = '1000x620',
   [int]$Fps = 15, [int]$Width = 800,   # over 3 MB: -Fps 12 or -Width 720
   [string]$Out = "docs/demo-$Lang.gif"
 )
@@ -26,7 +27,7 @@ while ($true) {
   catch { if (-not (Test-Path $lock)) { throw }; Write-Host "desktop.lock is held by $(Get-Content $lock -ErrorAction Ignore), waiting..."; Start-Sleep 10 }
 }
 try {
-  $proc = Start-Process $exe -PassThru -ArgumentList '--demo', '--autoplay', '--lang', $Lang, '--theme', 'dark', '--size', '1000x620', '--rect-file', $rect
+  $proc = Start-Process $exe -PassThru -ArgumentList '--demo', '--autoplay', '--lang', $Lang, '--theme', 'dark', '--size', $Size, '--rect-file', $rect
   $deadline = (Get-Date).AddSeconds(30)
   while (-not (Test-Path $rect)) {
     if ((Get-Date) -gt $deadline -or $proc.HasExited) { throw 'the app did not write --rect-file' }

@@ -36,11 +36,11 @@
         <WrapPanel Grid.Row="1" Margin="0,0,0,4">
             <ui:TextBlock Text="A" FontTypography="BodyStrong" VerticalAlignment="Center" Margin="0,0,6,6" />
             <DatePicker x:Name="ADate" Width="140" SelectedDateFormat="Short" Margin="0,0,6,6" />
-            <ComboBox x:Name="ATime" Width="180" Margin="0,0,10,6" />
+            <ComboBox x:Name="ATime" Width="210" Margin="0,0,10,6" />
             <ui:TextBlock Text="→" FontTypography="BodyStrong" VerticalAlignment="Center" Margin="0,0,10,6" />
             <ui:TextBlock Text="B" FontTypography="BodyStrong" VerticalAlignment="Center" Margin="0,0,6,6" />
             <DatePicker x:Name="BDate" Width="140" SelectedDateFormat="Short" Margin="0,0,6,6" />
-            <ComboBox x:Name="BTime" Width="180" Margin="0,0,0,6" />
+            <ComboBox x:Name="BTime" Width="210" Margin="0,0,0,6" />
         </WrapPanel>
 
         <TextBlock Grid.Row="2" x:Name="KeyText" TextWrapping="Wrap" Margin="0,2,0,8" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
@@ -55,6 +55,12 @@
 
             <ListBox x:Name="Timeline" SelectionMode="Extended" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                      Background="Transparent" BorderThickness="0">
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem" BasedOn="{StaticResource {x:Type ListBoxItem}}">
+                        <Setter Property="Padding" Value="10,3" />
+                        <Setter Property="MinHeight" Value="0" />
+                    </Style>
+                </ListBox.ItemContainerStyle>
                 <ListBox.ItemTemplate>
                     <DataTemplate DataType="{x:Type f:DayRow}">
                         <StackPanel Margin="2,3" ToolTip="{Binding Tip}">
@@ -88,7 +94,17 @@
                                 <ui:SymbolIcon Symbol="ArrowDownload16" Margin="6,0,0,0" FontSize="14" Foreground="{DynamicResource AccentTextFillColorPrimaryBrush}"
                                                Visibility="{Binding Update, Converter={StaticResource Vis}}" />
                             </StackPanel>
-                            <ui:TextBlock Text="{Binding Chips}" FontTypography="Caption" Appearance="Secondary" TextWrapping="Wrap" />
+                            <ui:TextBlock Text="{Binding Chips}" FontTypography="Caption" Appearance="Secondary" TextWrapping="Wrap">
+                                <ui:TextBlock.Style>
+                                    <Style TargetType="ui:TextBlock">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Chips}" Value="">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ui:TextBlock.Style>
+                            </ui:TextBlock>
                         </StackPanel>
                     </DataTemplate>
                 </ListBox.ItemTemplate>

@@ -1,7 +1,7 @@
 # README screenshots (00-shared §7): pwsh tools/shots.ps1 [-Pages main,settings]
 # Every page × en/ru × light/dark, rendered by the app itself at 2× (2200×1400) under --demo,
 # into docs/<page>-<theme>-<lang>.png, then oxipng. Run from the repo root; the path must have no spaces.
-param([string[]]$Pages = @('main', 'settings'))
+param([string[]]$Pages = @('main', 'settings'), [string]$Size = '1100x700')
 $ErrorActionPreference = 'Stop'; $PSNativeCommandUseErrorActionPreference = $true
 $Pages = $Pages -split ','   # pwsh -File passes "main,settings" as one string
 $App =(Get-ChildItem src -Directory | Select-Object -First 1).Name
@@ -19,7 +19,7 @@ try {
   foreach ($lang in 'en', 'ru') { foreach ($theme in 'light', 'dark') { foreach ($p in $Pages) {
     $png = "$PWD\docs\$p-$theme-$lang.png"
     $proc = Start-Process $exe -PassThru -ArgumentList '--demo', '--lang', $lang, '--theme', $theme, '--page', $p,
-      '--size', '1100x700', '--screenshot', $png
+      '--size', $Size, '--screenshot', $png
     if (-not $proc.WaitForExit(30000)) { $proc | Stop-Process; throw "timeout: $png" }
     if ($proc.ExitCode -ne 0) { throw "exit $($proc.ExitCode): $png" }
   }}}

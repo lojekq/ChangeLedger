@@ -15,7 +15,7 @@ public static class Autoplay
         (double At, Action Do)[] steps =
         [
             (1.2, () => ChangesPage.Shown?.Preset(7)),
-            (2.4, () => ChangesPage.Shown?.PickDays(DateTime.Today.AddDays(-6), DateTime.Today.AddDays(-6))),
+            (2.4, () => ChangesPage.Shown?.ClickDay(DateTime.Today.AddDays(-6))),
             (3.6, () => ChangesPage.Shown?.ExpandOnly("drivers")),
             (5.0, () => w.Navigate("power")),
             (6.4, () =>

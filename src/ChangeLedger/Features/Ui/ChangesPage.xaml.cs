@@ -191,11 +191,19 @@ public partial class ChangesPage
     }
 
     /// <summary>Previous snapshot before <paramref name="first"/> → the last snapshot of <paramref name="last"/>.</summary>
-    internal void PickDays(DateTime first, DateTime last)
+    void PickDays(DateTime first, DateTime last)
     {
         var idx = Ledger.Index;
         Select(idx.LastOrDefault(e => e.T < Utc(first)) ?? idx.FirstOrDefault(e => e.T >= Utc(first)),
             idx.LastOrDefault(e => e.T < Utc(last.AddDays(1))), () => PickDays(first, last));
+    }
+
+    /// <summary>Autoplay: the same as a click on that day in the timeline.</summary>
+    internal void ClickDay(DateTime day)
+    {
+        if ((Timeline.ItemsSource as List<DayRow>)?.FirstOrDefault(d => d.Day == day) is not { } row) return;
+        Timeline.SelectedItem = row;
+        Timeline.ScrollIntoView(row);
     }
 
     void Fill(DatePicker date, ComboBox time, IndexEntry? e)

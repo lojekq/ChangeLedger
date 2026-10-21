@@ -17,6 +17,7 @@ public static class Runner
     public static int Verb(string[] args)
     {
         var reason = args is ["--reason", "scheduled" or "manual" or "startup"] ? args[1] : "manual";
+        Log.Info($"snapshot {reason}: start");
         try { Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.Idle; } catch { }
         Settings.Load();
         var result = RunResult.Failed;
@@ -40,12 +41,12 @@ public static class Runner
                 var snap = Collectors.Take(reason, new(SnapshotStore.Salt(state), Settings.Current.ExtraSecretNames), ct);
                 var hash = snap.Hash();
                 state.LastCheckUtc = snap.TakenUtc;
-                if (hash == state.LastHash)
+                var index = SnapshotStore.ReadIndex(); // entries whose file is gone are dropped
+                if (hash == state.LastHash && index.Count > 0 && index[^1].H == hash) // files deleted by hand → write again
                 {
                     SnapshotStore.SaveState(state);
                     return RunResult.Unchanged;
                 }
-                var index = SnapshotStore.ReadIndex();
                 Snapshot? prev = null;
                 if (index.Count > 0)
                     try { prev = SnapshotStore.Read(index[^1].F); }
