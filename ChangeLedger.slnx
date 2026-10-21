@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/ChangeLedger/ChangeLedger.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/ChangeLedger.Tests/ChangeLedger.Tests.csproj" />
+  </Folder>
+</Solution>

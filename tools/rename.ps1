@@ -22,7 +22,7 @@ foreach ($f in git ls-files) {
           Replace("<AssemblyTitle>$old</AssemblyTitle>", "<AssemblyTitle>$Display</AssemblyTitle>").
           Replace("<Description>$old</Description>", "<Description>$Display</Description>").
           Replace("${old}Template", $Name).Replace($old, $Name)
-  $n = [regex]::Replace($n, '(?s)<!-- template -->.*?<!-- /template -->\r?\n?', '')
+  $n = [regex]::Replace($n, '(?s)\r?\n?', '')
   if ($n -cne $t) { [IO.File]::WriteAllText($path, $n) }
 }
 

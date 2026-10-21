@@ -30,5 +30,5 @@ body:
     attributes:
       label: Crash file or log
       description: >
-        Attach the newest file from %APPDATA%\TrayApp\crash (or \logs).
+        Attach the newest file from %APPDATA%\ChangeLedger\crash (or \logs).
         Check it first for personal paths or names and remove them.
