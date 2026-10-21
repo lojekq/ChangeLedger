@@ -145,8 +145,8 @@ public static class DemoData
             ("MatchingDeviceId", @"pci\ven_10de&dev_2d04"), ("ProviderName", "NVIDIA"));
         Item(s, "drivers", @"{4d36e96c-e325-11ce-bfc1-08002be10318}\0002", "Realtek High Definition Audio", ("Class", "MEDIA"), ("DriverDate", "5-14-2026"),
             ("DriverDesc", "Realtek High Definition Audio"), ("DriverVersion", "6.0.9814.1"), ("InfPath", "oem12.inf"), ("ProviderName", "Realtek Semiconductor Corp."));
-        Item(s, "drivers", @"{4d36e972-e325-11ce-bfc1-08002be10318}\0001", "Realtek Gaming 2.5GbE Family Controller", ("Class", "Net"), ("DriverDate", "3-2-2026"),
-            ("DriverDesc", "Realtek Gaming 2.5GbE Family Controller"), ("DriverVersion", "1125.21.903.2026"), ("InfPath", "oem7.inf"), ("ProviderName", "Realtek"));
+        Item(s, "drivers", @"{4d36e972-e325-11ce-bfc1-08002be10318}\0001", "Intel(R) Ethernet Controller I226-V", ("Class", "Net"), ("DriverDate", "3-2-2026"),
+            ("DriverDesc", "Intel(R) Ethernet Controller I226-V"), ("DriverVersion", "2.1.4.3"), ("InfPath", "oem7.inf"), ("ProviderName", "Intel"));
 
         Item(s, "services", "SysMain", "SysMain", ("ImagePath", @"%systemroot%\system32\svchost.exe -k LocalSystemNetworkRestricted -p"), ("ObjectName", "LocalSystem"), ("Start", "2"), ("Type", "32"));
         Item(s, "services", "Spooler", "Print Spooler", ("ImagePath", @"%SystemRoot%\System32\spoolsv.exe"), ("ObjectName", "LocalSystem"), ("Start", "2"), ("Type", "16"));
@@ -163,12 +163,12 @@ public static class DemoData
 
         Env(s, @"user\Path", @"C:\Users\demo\AppData\Local\Microsoft\WindowsApps;C:\Users\demo\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\demo\.dotnet\tools;C:\Users\demo\AppData\Local\Programs\Ollama");
         Env(s, @"machine\Path", @"C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\Program Files\Git\cmd;C:\Program Files\dotnet\");
-        Env(s, @"machine\CUDA_PATH", @"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.8");
+        Env(s, @"machine\CUDA_PATH", @"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.6");
         Env(s, @"user\HF_TOKEN", "•••• sha256:9c2e41d0");
         Env(s, @"user\OLLAMA_MODELS", @"D:\models");
 
         Item(s, "wake", Loc.T("Demo.Mouse"), Loc.T("Demo.Mouse"));
-        Item(s, "wake", "Realtek Gaming 2.5GbE Family Controller", "Realtek Gaming 2.5GbE Family Controller");
+        Item(s, "wake", "Intel(R) Ethernet Controller I226-V", "Intel(R) Ethernet Controller I226-V");
         return s;
     }
 }

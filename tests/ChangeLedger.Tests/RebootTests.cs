@@ -18,7 +18,7 @@ public class RebootTests
     public void Planned1074IsAPlannedRestart()
     {
         var e = Last(E(0, KernelGeneral, 12),
-            E(50, User32, 1074, ("param1", @"C:\WINDOWS\system32\winlogon.exe (MINTI)"), ("param3", "Operating System: Upgrade (Planned)"),
+            E(50, User32, 1074, ("param1", @"C:\WINDOWS\system32\winlogon.exe (DESKTOP-1)"), ("param3", "Operating System: Upgrade (Planned)"),
                 ("param5", "restart"), ("param6", ""), ("param7", @"NT AUTHORITY\SYSTEM")),
             E(51, KernelGeneral, 13),
             E(52, KernelBoot, 27, ("BootType", "0")),

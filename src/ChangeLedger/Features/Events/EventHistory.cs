@@ -144,7 +144,7 @@ public static partial class RebootClassifier
         return [.. list.OrderByDescending(e => e.Utc)];
     }
 
-    /// <summary>"C:\WINDOWS\system32\winlogon.exe (MINTI)" + "NT AUTHORITY\SYSTEM" → "winlogon.exe, NT AUTHORITY\SYSTEM".</summary>
+    /// <summary>"C:\WINDOWS\system32\winlogon.exe (DESKTOP-1)" + "NT AUTHORITY\SYSTEM" → "winlogon.exe, NT AUTHORITY\SYSTEM".</summary>
     static string Initiator(Ev e)
     {
         var process = Regex.Replace(e["param1"] ?? "", @"\s*\([^)]*\)$", "");
