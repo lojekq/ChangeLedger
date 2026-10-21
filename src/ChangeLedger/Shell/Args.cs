@@ -15,6 +15,9 @@ public sealed class Args
     public int Height { get; private set; }
     public string? Screenshot { get; private set; }  // png path
     public string? RectFile { get; private set; }    // txt path
+    public bool Install { get; private set; }        // Installer: install without asking (Settings → Install)
+    public bool Installed { get; private set; }      // Installer: first start of a fresh install, apply install defaults
+    public bool Uninstall { get; private set; }      // Installer: uninstall (Settings → Apps, Settings → Uninstall)
     public List<string> Unknown { get; } = [];
 
     public static Args Parse(IReadOnlyList<string> a)
@@ -30,6 +33,9 @@ public sealed class Args
                 case "--background": r.Background = true; break;
                 case "--demo": r.Demo = true; break;
                 case "--autoplay": r.Autoplay = true; break;
+                case "--install": r.Install = true; break;
+                case "--installed": r.Installed = true; break;
+                case "--uninstall": r.Uninstall = true; break;
                 case "--lang": r.Lang = Value() is "en" or "ru" ? a[i] : Bad(); break;
                 case "--theme": r.Theme = Value() is "light" or "dark" ? a[i] : Bad(); break;
                 case "--page": r.Page = Value() ?? Bad(); break;

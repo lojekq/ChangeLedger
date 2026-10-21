@@ -62,6 +62,28 @@ public class ShellTests
     public void UpdateVersionCompare(string tag, string current, bool newer) => Assert.AreEqual(newer, Updates.IsNewer(tag, current));
 
     [TestMethod]
+    public void InstalledExeIsComparedAsWindowsDoes()
+    {
+        Assert.IsTrue(Install.IsAt(Install.Exe.ToUpperInvariant()));
+        Assert.IsTrue(Install.IsAt(Path.Combine(Install.Dir, "sub", "..", "ChangeLedger.exe")));
+        Assert.IsFalse(Install.IsAt(Path.Combine(Install.Dir + "-dev", "ChangeLedger.exe")));
+        Assert.IsFalse(Install.IsAt(Path.Combine(Install.Dir, "ChangeLedger-1.0.1-win-x64.exe")));
+    }
+
+    [TestMethod]
+    public void InstallerPlans()
+    {
+        const string downloaded = @"C:\Tools\ChangeLedger.exe";
+        Assert.AreEqual(Installer.Plan.Run, Installer.Decide(Install.Exe, "1.0.2", "1.0.2", skipped: false));    // the installed copy itself
+        Assert.AreEqual(Installer.Plan.Install, Installer.Decide(downloaded, "1.0.2", null, skipped: false));
+        Assert.AreEqual(Installer.Plan.Run, Installer.Decide(downloaded, "1.0.2", null, skipped: true));         // "Run without installing" before
+        Assert.AreEqual(Installer.Plan.Update, Installer.Decide(downloaded, "1.0.2", "1.0.1", skipped: false));
+        Assert.AreEqual(Installer.Plan.Update, Installer.Decide(downloaded, "1.0.0", "1.0.0-rc.1", skipped: false));
+        Assert.AreEqual(Installer.Plan.ShowInstalled, Installer.Decide(downloaded, "1.0.1", "1.0.1", skipped: false));
+        Assert.AreEqual(Installer.Plan.ShowInstalled, Installer.Decide(downloaded, "1.0.1", "1.1.0", skipped: false)); // never downgrade
+    }
+
+    [TestMethod]
     public void RuAndEnStringsHaveTheSameKeys()
     {
         var rm = new ResourceManager("ChangeLedger.Resources.Strings", typeof(Loc).Assembly);

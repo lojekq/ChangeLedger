@@ -40,6 +40,17 @@
                 <ui:ToggleSwitch x:Name="StartMenuSwitch" />
             </ui:CardControl>
 
+            <!-- Shown only where Installer works: a published single-file exe, not the demo mode -->
+            <ui:CardControl x:Name="InstallCard" Icon="{ui:SymbolIcon ArrowDownload24}" Margin="0,0,0,4" Visibility="Collapsed">
+                <ui:CardControl.Header>
+                    <StackPanel>
+                        <ui:TextBlock Text="{l:T Settings.Install}" />
+                        <ui:TextBlock x:Name="InstallNote" FontTypography="Caption" Appearance="Secondary" TextWrapping="Wrap" />
+                    </StackPanel>
+                </ui:CardControl.Header>
+                <ui:Button x:Name="InstallButton" />
+            </ui:CardControl>
+
             <ui:CardControl Icon="{ui:SymbolIcon ArrowSync24}" Margin="0,0,0,4">
                 <ui:CardControl.Header>
                     <StackPanel>

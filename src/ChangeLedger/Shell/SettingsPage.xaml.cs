@@ -1,3 +1,5 @@
+using System.Diagnostics;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -20,6 +22,17 @@ public partial class SettingsPage
         StartMenuSwitch.IsChecked = !Args.Current.Demo && StartMenu.Exists;
         UpdatesSwitch.IsChecked = s.CheckUpdates;
         AppSectionHost.Content = AppSection?.Invoke();
+        if (Installer.Available)
+        {
+            var installed = Install.IsInstalled;
+            InstallCard.Visibility = Visibility.Visible;
+            InstallNote.Text = installed ? string.Format(Loc.T("Settings.Installed"), Install.Dir)
+                                         : string.Format(Loc.T("Settings.NotInstalled"), Path.GetDirectoryName(AppInfo.ExePath));
+            InstallButton.Content = Loc.T(installed ? "Uninstall.Button" : "Install.Button");
+            // A new process does the work: it closes this one through the single-instance channel when needed
+            InstallButton.Click += (_, _) =>
+                Process.Start(new ProcessStartInfo(installed ? Install.Exe : AppInfo.ExePath) { ArgumentList = { installed ? "--uninstall" : "--install" } });
+        }
 
         var initialLanguage = s.Language;
         LanguageBox.SelectionChanged += (_, _) =>

@@ -34,5 +34,13 @@ public static class Theme
         }
     }
 
+    /// <summary>Colors only, for dialogs shown before the main window exists (Installer).</summary>
+    public static void ApplyColors(string setting)
+    {
+        var theme = Args.Current.Theme ?? setting;
+        var dark = theme == "dark" || (theme != "light" && ApplicationThemeManager.GetSystemTheme() == SystemTheme.Dark);
+        ApplicationThemeManager.Apply(dark ? ApplicationTheme.Dark : ApplicationTheme.Light, WindowBackdropType.None);
+    }
+
     public static bool IsDark => ApplicationThemeManager.GetAppTheme() == ApplicationTheme.Dark;
 }

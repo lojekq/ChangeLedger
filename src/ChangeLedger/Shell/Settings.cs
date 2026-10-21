@@ -16,7 +16,8 @@ public sealed partial class Settings
     public bool CheckUpdates { get; set; } = true;
     public string? NotifiedVersion { get; set; }       // update balloon is shown once per version
     public bool TrayHintShown { get; set; }            // "still running in the tray" balloon, first close only
-    public bool FirstRunDone { get; set; }             // first start from Install.Dir done (Start menu shortcut on)
+    public bool FirstRunDone { get; set; }             // first start of the installed exe done (shortcut and autostart defaults)
+    public List<string> NoInstall { get; set; } = [];  // exe paths where the user chose "Run without installing"
 
     public static Settings Current { get; private set; } = new();
     public static string FilePath => Path.Combine(AppInfo.DataDir, "settings.json");

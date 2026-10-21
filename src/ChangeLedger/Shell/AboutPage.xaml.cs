@@ -23,6 +23,7 @@ public partial class AboutPage
             Process.Start("explorer.exe", $"\"{AppInfo.DataDir}\"");
         };
         RemoveButton.Click += (_, _) => Remove();
+        if (Install.IsInstalled) RemoveCard.Visibility = Visibility.Collapsed;
     }
 
     /// <summary>For a portable app this is the uninstall: data folders, Run value, shortcut, then exit. The exe stays.</summary>

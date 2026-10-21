@@ -39,6 +39,28 @@
 Лог ошибки: {1}
 
 Открыть папку?</value></data>
+  <data name="Install.Ask" xml:space="preserve"><value>Установить {0}?
+
+Программа будет скопирована в {1}, появятся ярлык в «Пуске» и запись в «Параметры → Приложения». Права администратора не нужны.</value></data>
+  <data name="Install.Button" xml:space="preserve"><value>Установить</value></data>
+  <data name="Install.NoInstall" xml:space="preserve"><value>Без установки</value></data>
+  <data name="Install.Update" xml:space="preserve"><value>Обновить {0} {1} → {2}?
+
+Работающая копия закроется и запустится снова.</value></data>
+  <data name="Install.UpdateButton" xml:space="preserve"><value>Обновить</value></data>
+  <data name="Install.CloseRunning" xml:space="preserve"><value>{0} ещё работает. Закройте программу в трее: правый клик по значку → «Выход», затем нажмите «Повторить».</value></data>
+  <data name="Install.Retry" xml:space="preserve"><value>Повторить</value></data>
+  <data name="Install.Cancel" xml:space="preserve"><value>Отмена</value></data>
+  <data name="Uninstall.Ask" xml:space="preserve"><value>Удалить {0}?
+
+Будут удалены программа, ярлык в «Пуске», автозапуск и запись в «Параметры → Приложения».</value></data>
+  <data name="Uninstall.Data" xml:space="preserve"><value>Удалить также настройки, логи и снимки</value></data>
+  <data name="Uninstall.Button" xml:space="preserve"><value>Удалить</value></data>
+  <data name="Uninstall.Done" xml:space="preserve"><value>Программа {0} удалена.</value></data>
+  <data name="Uninstall.Leftover" xml:space="preserve"><value>Часть файлов занята и осталась в {0}. Удалите папку позже.</value></data>
+  <data name="Settings.Install" xml:space="preserve"><value>Установка</value></data>
+  <data name="Settings.Installed" xml:space="preserve"><value>Установлена в {0}</value></data>
+  <data name="Settings.NotInstalled" xml:space="preserve"><value>Работает без установки, из {0}</value></data>
   <data name="Hotkey.Placeholder" xml:space="preserve"><value>Нажмите сочетание клавиш</value></data>
   <data name="Hotkey.Busy" xml:space="preserve"><value>Занято другой программой</value></data>
   <data name="Hotkey.Failed" xml:space="preserve"><value>Не удалось зарегистрировать</value></data>
@@ -152,7 +174,7 @@
   <data name="Task.Off" xml:space="preserve"><value>Выключена</value></data>
   <data name="Task.Error" xml:space="preserve"><value>Не удалось прочитать планировщик</value></data>
   <data name="Task.LastRun" xml:space="preserve"><value>последний запуск {0} ({1})</value></data>
-  <data name="Task.NotInstalled" xml:space="preserve"><value>Эта копия лежит не в {0}, поэтому задачу создаёт только кнопка «Починить».</value></data>
+  <data name="Task.NotInstalled" xml:space="preserve"><value>Эта копия не установлена, поэтому задачу для неё создаёт только «Починить»; «Установить» выше кладёт программу с задачей в {0}.</value></data>
   <data name="Task.Failed" xml:space="preserve"><value>Задача планировщика не изменена: {0}</value></data>
   <data name="Snap.Busy" xml:space="preserve"><value>Уже идёт другой снимок. Попробуйте через минуту.</value></data>
   <data name="Snap.First" xml:space="preserve"><value>Первый снимок сохранён.</value></data>

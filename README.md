@@ -60,18 +60,18 @@ Autoruns shows what starts now, but not what it was yesterday.
 
 ## Download
 
-1. Get **`ChangeLedger-x.y.z-win-x64.exe`** from [Releases](https://github.com/lojekq/ChangeLedger/releases/latest). Single file, no install, no admin.
-2. Smaller build: `ChangeLedger-x.y.z-win-x64-fd.zip` (needs [.NET Desktop Runtime 10](https://dotnet.microsoft.com/download/dotnet/10.0)).
+1. **[Download ChangeLedger.exe](https://github.com/lojekq/ChangeLedger/releases/latest/download/ChangeLedger.exe)** (latest release). One file, no admin rights.
+2. Smaller build: [`ChangeLedger-fd.zip`](https://github.com/lojekq/ChangeLedger/releases/latest/download/ChangeLedger-fd.zip) (needs [.NET Desktop Runtime 10](https://dotnet.microsoft.com/download/dotnet/10.0)).
 3. Optional check: `gh attestation verify <file> -R lojekq/ChangeLedger` or compare with `SHA256SUMS.txt`.
 
 Requirements: Windows 11 x64. Windows 10 22H2 should work but is not tested.
 
 ## First run
 
-Put the exe into `%LOCALAPPDATA%\Programs\ChangeLedger\` first: from there it creates its daily task by itself and repairs the path if you move it.
-A copy in another folder (Downloads, a build folder) creates the task only when you press **Repair** in Settings.
-On the first start Windows may show a SmartScreen warning (see FAQ). The first snapshot is taken 2 minutes after the start; there is something to compare it with from the next day.
-Turn on **Start with Windows** in Settings: then a snapshot also follows every restart, so you get "after the update" right away.
+Run the downloaded exe from anywhere. Windows may show a SmartScreen warning first (see FAQ).
+The app offers to install itself: **Install** copies it to `%LOCALAPPDATA%\Programs\ChangeLedger\`, adds a Start menu shortcut, autostart, an entry in Settings → Apps and the daily scheduler task; no admin rights.
+**Run without installing** keeps it portable: then only **Repair** in Settings creates the task. To update, run a newer exe the same way: it replaces the installed one and restarts it.
+The first snapshot is taken 2 minutes after the start; there is something to compare it with from the next day, and every restart gets an "after the update" snapshot.
 
 ## Settings
 
@@ -83,8 +83,9 @@ Turn on **Start with Windows** in Settings: then a snapshot also follows every r
 | Hidden changes | none | One rule per line, `category\|key regex`; **Hide such** in the row menu adds one, **Show hidden** brings the lines back |
 | Notify after an unexpected restart | on | A notification at start after a BSOD, a power loss or a held power button |
 | Language, theme | Windows | English or Russian (after a restart), light or dark |
-| Start with Windows | off | Starts minimized to the tray; 2 minutes after the start it takes a snapshot if the last one is over an hour old |
-| Start menu shortcut | on when the exe is in `%LOCALAPPDATA%\Programs\ChangeLedger\` | A shortcut in the Start menu |
+| Start with Windows | on after install | Starts minimized to the tray; 2 minutes after the start it takes a snapshot if the last one is over an hour old |
+| Start menu shortcut | on after install | A shortcut in the Start menu |
+| Installation | — | Install, or Uninstall when installed |
 | Check for updates | on | Once a day asks GitHub about a new release |
 
 Settings and logs live in `%APPDATA%\ChangeLedger`, snapshots in `%LOCALAPPDATA%\ChangeLedger` (about 80 KB for a day with changes; days without changes take nothing).
@@ -102,7 +103,7 @@ Smart App Control, if it is on, blocks unsigned files with no way to allow one; 
 <details><summary>My antivirus flags it</summary>
 
 It is a false positive. An unsigned exe that creates a scheduled task and reads startup keys and environment variables looks like malware to a heuristic.
-The task is called `ChangeLedger Snapshot (<your SID>)` and says what it does; the app has no installer, no packer and no obfuscation.
+The task is called `ChangeLedger Snapshot (<your SID>)` and says what it does; the app has no packer and no obfuscation, and it installs only into your user folder.
 Please report it to your antivirus vendor and open an issue with the detection name and the SHA256 of the file.
 </details>
 
@@ -120,7 +121,8 @@ Start Change Ledger the usual way; it never needs admin rights.
 
 <details><summary>How do I uninstall?</summary>
 
-About → **Remove data and autostart** (it also deletes the scheduled task and all snapshots), then delete the exe.
+Settings → **Uninstall**, or Windows Settings → Apps → Change Ledger → Uninstall. The scheduler task goes too; you choose whether settings, logs and snapshots go as well.
+Without installing: About → **Remove data and autostart** (it also deletes the scheduler task and all snapshots), then delete the exe.
 </details>
 
 ## Privacy

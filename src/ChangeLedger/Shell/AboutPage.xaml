@@ -28,7 +28,8 @@
                 <ui:Button x:Name="OpenDataButton" Content="{l:T About.OpenDataFolder}" />
             </ui:CardControl>
 
-            <ui:CardControl Icon="{ui:SymbolIcon Delete24}" Margin="0,0,0,4">
+            <!-- Portable use only: an installed copy is removed with Settings → Uninstall -->
+            <ui:CardControl x:Name="RemoveCard" Icon="{ui:SymbolIcon Delete24}" Margin="0,0,0,4">
                 <ui:CardControl.Header>
                     <StackPanel>
                         <ui:TextBlock Text="{l:T About.Remove}" />

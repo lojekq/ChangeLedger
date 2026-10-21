@@ -14,14 +14,15 @@ if (-not $signtool) { throw 'signtool.exe not found: install the Windows SDK (§
 $d = Join-Path $env:TEMP "sign-$Tag-$(Get-Random)"
 gh release download $Tag -D $d
 $zip = Get-ChildItem $d -Filter '*-fd.zip'
-$app = $zip.Name -replace '-\d.*$'                      # PingWhen-0.2.0-win-x64-fd.zip → PingWhen
+$app = $zip.Name -replace '(-\d.*)?-fd\.zip$'          # PingWhen-fd.zip (or the older PingWhen-0.2.0-win-x64-fd.zip) → PingWhen
 Expand-Archive $zip.FullName "$d\fd"
 $files = @((Get-ChildItem $d -Filter '*.exe').FullName) + "$d\fd\$app.exe"
 & $signtool sign /sha1 $env:CERTUM_THUMBPRINT /fd sha256 /tr http://time.certum.pl /td sha256 @files
 & $signtool verify /pa @files
 Remove-Item $zip.FullName; Compress-Archive "$d\fd\*" $zip.FullName
 Get-ChildItem $d -File | Where-Object Name -ne 'SHA256SUMS.txt' | Get-FileHash -Algorithm SHA256 |
-  ForEach-Object { '{0}  {1}' -f $_.Hash.ToLower(), (Split-Path $_.Path -Leaf) } | Set-Content "$d\SHA256SUMS.txt"
+  ForEach-Object { '{0}  {1}' -f $_.Hash.ToLower(), (Split-Path $_.Path -Leaf) } | Join-String -Separator "`n" |
+  ForEach-Object { [IO.File]::WriteAllText("$d\SHA256SUMS.txt", "$_`n") }   # LF, as in ci.yml
 gh release upload $Tag (Get-ChildItem $d -File).FullName --clobber
 gh release edit $Tag --draft=false
 Remove-Item $d -Recurse -Force

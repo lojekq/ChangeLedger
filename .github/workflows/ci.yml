@@ -34,11 +34,12 @@ jobs:
           dotnet publish $proj @c --self-contained -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true -o out/sc
           dotnet publish $proj @c --no-self-contained -o out/fd
           New-Item -ItemType Directory dist | Out-Null
-          Copy-Item "out/sc/$env:APP.exe" "dist/$env:APP-$ver-win-x64.exe"
-          Compress-Archive out/fd/* "dist/$env:APP-$ver-win-x64-fd.zip"
-          Get-ChildItem dist | Get-FileHash -Algorithm SHA256 |
-            ForEach-Object { '{0}  {1}' -f $_.Hash.ToLower(), (Split-Path $_.Path -Leaf) } |
-            Set-Content dist/SHA256SUMS.txt
+          # Names without a version: releases/latest/download/<App>.exe always works, and the exe installs itself under this name
+          Copy-Item "out/sc/$env:APP.exe" "dist/$env:APP.exe"
+          Compress-Archive out/fd/* "dist/$env:APP-fd.zip"
+          $sums = Get-ChildItem dist | Get-FileHash -Algorithm SHA256 |
+            ForEach-Object { '{0}  {1}' -f $_.Hash.ToLower(), (Split-Path $_.Path -Leaf) }
+          [IO.File]::WriteAllText("$PWD/dist/SHA256SUMS.txt", ($sums -join "`n") + "`n")   # LF: sha256sum -c reads CR as part of the name
       - uses: actions/attest-build-provenance@v4
         with:
           subject-path: |
