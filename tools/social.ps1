@@ -2,11 +2,12 @@
 # Uses docs/main-dark-en.png from shots.ps1. Upload by hand: Settings → General → Social preview (§5).
 param(
   [Parameter(Mandatory)][string]$Title,
-  [Parameter(Mandatory)][string]$Subtitle
+  [Parameter(Mandatory)][string]$Subtitle,
+  [string]$Shot = 'docs/main-dark-en.png'
 )
 $ErrorActionPreference = 'Stop'; $PSNativeCommandUseErrorActionPreference = $true
 if ("$Title$Subtitle" -match "['`:\\%]") { throw "no ' : \ % in the texts: drawtext would need escaping" }
-$shot = 'docs/main-dark-en.png'
+$shot = $Shot
 if (-not (Test-Path $shot)) { throw "$shot not found: run tools/shots.ps1 first" }
 ffmpeg -y -loglevel error -f lavfi -i "color=c=0x1c1c1c:s=1280x640" -i $shot -frames:v 1 -filter_complex `
   ("[1]scale=1000:-1[s];[0][s]overlay=(W-w)/2:190," +

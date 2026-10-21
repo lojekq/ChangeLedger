@@ -3,7 +3,8 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
       xmlns:l="clr-namespace:ChangeLedger.Shell"
-      xmlns:f="clr-namespace:ChangeLedger.Features">
+      xmlns:f="clr-namespace:ChangeLedger.Features"
+      Foreground="{DynamicResource TextFillColorPrimaryBrush}">
     <Grid Margin="20,0,20,16">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />

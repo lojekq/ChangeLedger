@@ -1,9 +1,9 @@
 <div align="center">
 <img src="docs/icon.png" width="96" alt="">
 
-# ChangeLedger
+# Change Ledger
 
-**Skeleton for small Windows tray apps: one exe, RU/EN, light and dark, releases from CI.**
+**Worked last week, broken today? See exactly what changed in Windows between any two days.**
 
 **English** · [Русский](README.ru.md)
 
@@ -14,35 +14,47 @@
 [![License](https://img.shields.io/github/license/lojekq/ChangeLedger)](LICENSE)
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/main-dark-en.png">
-  <img src="docs/main-light-en.png" width="820" alt="ChangeLedger main window">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/changes-dark-en.png">
+  <img src="docs/changes-light-en.png" width="820" alt="Change Ledger: before and after a Windows update, the NVIDIA driver and a new service">
 </picture>
 </div>
 
-
 ## Why
 
-Every small Windows utility needs the same boring parts: a tray icon, settings, autostart, two languages, a crash log and a release with checksums.
-ChangeLedger has them done once, so an app only adds its own pages.
+A game started crashing, the PC wakes up at night, a tool stopped finding Python. Something changed, but what and when?
+Change Ledger takes a small read-only snapshot of what usually breaks Windows once a day and shows the difference between any two dates.
+A second page explains every restart and wake-up from the Windows logs: who, when and why.
 
 ## Features
 
-- **Tray first** — left click opens the window, the cross hides it, Exit is in the tray menu.
-- **One exe** — no installer and no admin rights; a Start menu shortcut and autostart are switches in Settings.
-- **English and Russian, light and dark** — follows Windows or your choice.
-- **Honest updates** — once a day it asks GitHub about a new release, shows a note and downloads nothing.
-- **Crash log** — if it fails, it stops and shows where the log is; nothing is sent anywhere.
+- **Daily snapshots** — apps, drivers, services, scheduled tasks, startup items, environment variables with PATH, wake devices; no admin rights, everything stays on your PC.
+- **Any two days** — a timeline and a diff by category, "was → now" for every property.
+- **Before and after a Windows update** — in one click.
+- **Why it restarted or woke up** — planned restart, BSOD, power loss, a held power button; a task timer or a device, with what to turn off.
+- **Private and read-only** — secrets are masked, no network, nothing in Windows is changed.
+- **Copy for AI** — the diff as Markdown for Claude or a local model.
 
 ## See it in action
 
-![ChangeLedger demo](docs/demo-en.gif)
+![Change Ledger demo](docs/demo-en.gif)
+
+## How it works
+
+A Task Scheduler task of your own user runs the same exe once a day without a window (`ChangeLedger.exe --snapshot`).
+It reads the registry and the Task Scheduler, keeps the result as compressed JSON and writes a new file only if something changed.
+Restarts and wake-ups are read straight from the Windows System log, so they need no snapshots.
+
+Why not Reliability Monitor or Autoruns? Reliability Monitor does not see drivers, services or PATH.
+Autoruns shows what starts now, but not what it was yesterday.
 
 ## Screenshots
 
 | | Light | Dark |
 |---|---|---|
+| Apps and startup | ![Apps and startup, light](docs/changes-apps-light-en.png) | ![Apps and startup, dark](docs/changes-apps-dark-en.png) |
+| PATH and variables | ![PATH, light](docs/changes-path-light-en.png) | ![PATH, dark](docs/changes-path-dark-en.png) |
+| Reboots and wakes | ![Reboots, light](docs/power-light-en.png) | ![Reboots, dark](docs/power-dark-en.png) |
 | Settings | ![Settings, light](docs/settings-light-en.png) | ![Settings, dark](docs/settings-dark-en.png) |
-| About | ![About, light](docs/about-light-en.png) | ![About, dark](docs/about-dark-en.png) |
 
 ## Download
 
@@ -54,20 +66,25 @@ Requirements: Windows 11 x64. Windows 10 22H2 should work but is not tested.
 
 ## First run
 
-Put the exe into a permanent folder first, for example `%LOCALAPPDATA%\Programs\ChangeLedger\`: autostart and the shortcut point to it.
-On the first start Windows may show a SmartScreen warning (see FAQ). The app then lives in the tray; turn on **Start with Windows** in Settings.
+Put the exe into `%LOCALAPPDATA%\Programs\ChangeLedger\` first: from there it creates its daily task by itself and repairs the path if you move it.
+A copy in another folder (Downloads, a build folder) creates the task only when you press **Repair** in Settings.
+On the first start Windows may show a SmartScreen warning (see FAQ). The first snapshot is taken 2 minutes after the start; there is something to compare it with from the next day.
+Turn on **Start with Windows** in Settings: then a snapshot also follows every restart, so you get "after the update" right away.
 
 ## Settings
 
 | Setting | Default | What it does |
 |---|---|---|
-| Language | Windows language | English or Russian, applied after a restart |
-| Theme | Windows theme | Light or dark |
-| Start with Windows | off | Starts minimized to the tray |
+| Daily snapshot | on, 12:00 | The task runs a snapshot every day; if the PC was off, it runs at the next sign-in |
+| Keep snapshots | 365 days, 500 MB | Older and extra snapshots are deleted; the two newest never are |
+| Extra secret variable names | none | More environment variables to mask; names with KEY, TOKEN, SECRET, PASS, PWD, CRED or AUTH are always masked |
+| Language, theme | Windows | English or Russian (after a restart), light or dark |
+| Start with Windows | off | Starts minimized to the tray; 2 minutes after the start it takes a snapshot if the last one is over an hour old |
 | Start menu shortcut | on when the exe is in `%LOCALAPPDATA%\Programs\ChangeLedger\` | A shortcut in the Start menu |
 | Check for updates | on | Once a day asks GitHub about a new release |
 
-Settings and logs live in `%APPDATA%\ChangeLedger`.
+Settings and logs live in `%APPDATA%\ChangeLedger`, snapshots in `%LOCALAPPDATA%\ChangeLedger` (about 80 KB for a day with changes; days without changes take nothing).
+Settings also show the task status with **Repair**, **Snapshot now**, **Rebuild index** and **Delete task and all data**.
 
 ## FAQ
 
@@ -80,19 +97,33 @@ Smart App Control, if it is on, blocks unsigned files with no way to allow one; 
 
 <details><summary>My antivirus flags it</summary>
 
-It is a false positive: the app has no installer, no packer and no obfuscation. Please report it to your antivirus vendor
-and open an issue with the detection name and the SHA256 of the file.
+It is a false positive. An unsigned exe that creates a scheduled task and reads startup keys and environment variables looks like malware to a heuristic.
+The task is called `ChangeLedger Snapshot (<your SID>)` and says what it does; the app has no installer, no packer and no obfuscation.
+Please report it to your antivirus vendor and open an issue with the detection name and the SHA256 of the file.
+</details>
+
+<details><summary>I see changes I did not make</summary>
+
+Windows and updaters change things on their own: Edge and Office tasks, services that switch their start type.
+Known noise is hidden; **Show hidden** brings it back. If something keeps showing up for nothing, open an issue with the line from **Copy**.
+</details>
+
+<details><summary>Why no snapshot when I run it as administrator?</summary>
+
+As administrator Windows shows scheduled tasks that a normal user never sees, so snapshots would stop being comparable.
+Start Change Ledger the usual way; it never needs admin rights.
 </details>
 
 <details><summary>How do I uninstall?</summary>
 
-About → **Remove data and autostart**, then delete the exe.
+About → **Remove data and autostart** (it also deletes the scheduled task and all snapshots), then delete the exe.
 </details>
 
 ## Privacy
 
 No telemetry. The only network request is the update check: `GET https://api.github.com/repos/lojekq/ChangeLedger/releases/latest` once a day; turn it off in Settings.
-Logs contain no window titles, paths or other personal data.
+Snapshots never leave your PC. Values of secret-looking variables and `--token=…` style arguments are replaced with a salted hash before anything reaches the disk.
+**Copy for AI** only puts that masked text on the clipboard. Logs contain no command lines or variable values.
 
 ## Build from source
 
@@ -103,6 +134,8 @@ cd ChangeLedger
 dotnet run --project src/ChangeLedger
 dotnet test
 ```
+
+`--demo` runs the app on made-up snapshots without reading your PC.
 
 ## License
 
