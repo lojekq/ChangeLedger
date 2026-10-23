@@ -17,7 +17,7 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <WrapPanel Grid.Row="0">
+        <WrapPanel Grid.Row="0" x:Name="Toolbar">
             <ui:Button x:Name="Preset1" Content="{l:T Changes.24h}" Margin="0,0,6,6" />
             <ui:Button x:Name="Preset7" Content="{l:T Changes.7d}" Margin="0,0,6,6" />
             <ui:Button x:Name="Preset30" Content="{l:T Changes.30d}" Margin="0,0,6,6" />
@@ -34,7 +34,7 @@
             </ui:Button>
         </WrapPanel>
 
-        <WrapPanel Grid.Row="1" Margin="0,0,0,4">
+        <WrapPanel Grid.Row="1" x:Name="RangeBar" Margin="0,0,0,4">
             <ui:TextBlock Text="A" FontTypography="BodyStrong" VerticalAlignment="Center" Margin="0,0,6,6" />
             <DatePicker x:Name="ADate" Width="140" SelectedDateFormat="Short" Margin="0,0,6,6" />
             <ComboBox x:Name="ATime" Width="210" Margin="0,0,10,6" />
@@ -55,12 +55,13 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <ListBox x:Name="Timeline" SelectionMode="Extended" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+            <ListBox x:Name="Timeline" Width="250" SelectionMode="Extended" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                      Background="Transparent" BorderThickness="0">
                 <ListBox.ItemContainerStyle>
                     <Style TargetType="ListBoxItem" BasedOn="{StaticResource {x:Type ListBoxItem}}">
                         <Setter Property="Padding" Value="10,3" />
                         <Setter Property="MinHeight" Value="0" />
+                        <Setter Property="AutomationProperties.Name" Value="{Binding Label}" />
                     </Style>
                 </ListBox.ItemContainerStyle>
                 <ListBox.ItemTemplate>
@@ -117,12 +118,6 @@
             </ListBox>
 
             <Grid Grid.Column="1" Margin="12,0,0,0">
-                <StackPanel x:Name="EmptyPanel" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="460" Visibility="Collapsed">
-                    <ui:TextBlock x:Name="EmptyText" FontTypography="BodyStrong" TextWrapping="Wrap" TextAlignment="Center" />
-                    <ui:Button x:Name="EmptySnapshot" Content="{l:T Changes.SnapshotNow}" Icon="{ui:SymbolIcon Camera20}" Appearance="Primary"
-                               HorizontalAlignment="Center" Margin="0,12,0,0" />
-                </StackPanel>
-
                 <ItemsControl x:Name="DiffList" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.ScrollUnit="Pixel"
                               VirtualizingPanel.VirtualizationMode="Recycling">
                     <ItemsControl.Template>
@@ -225,5 +220,12 @@
                 </ItemsControl>
             </Grid>
         </Grid>
+
+        <!-- Empty states: over the diff column, or the whole page before the first snapshot (Render places it) -->
+        <StackPanel Grid.Row="4" x:Name="EmptyPanel" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="460" Visibility="Collapsed">
+            <ui:TextBlock x:Name="EmptyText" FontTypography="BodyStrong" TextWrapping="Wrap" TextAlignment="Center" />
+            <ui:Button x:Name="EmptySnapshot" Content="{l:T Changes.SnapshotNow}" Icon="{ui:SymbolIcon Camera20}" Appearance="Primary"
+                       HorizontalAlignment="Center" Margin="0,12,0,0" />
+        </StackPanel>
     </Grid>
 </Page>

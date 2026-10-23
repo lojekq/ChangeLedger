@@ -227,7 +227,7 @@ public sealed record Journal(List<PowerEntry> Power, List<DefenderChange> Defend
 /// </summary>
 public static class EventArchive
 {
-    static string FilePath => System.IO.Path.Combine(AppInfo.LocalDir, "events.jsonl");
+    static string FilePath => System.IO.Path.Combine(SnapshotStore.Root, "events.jsonl");
 
     public static void Append(LedgerState state, int retentionDays)
     {

@@ -72,8 +72,8 @@ public partial class SettingsSection
         FolderButton.Click += (_, _) =>
         {
             if (Demo) return;
-            Directory.CreateDirectory(AppInfo.LocalDir);
-            Process.Start("explorer.exe", $"\"{AppInfo.LocalDir}\"");
+            Directory.CreateDirectory(SnapshotStore.Root);
+            Process.Start("explorer.exe", $"\"{SnapshotStore.Root}\"");
         };
         RebuildButton.Click += async (_, _) =>
         {
@@ -96,7 +96,7 @@ public partial class SettingsSection
     {
         var s = Settings.Current;
         var (bytes, count) = Demo ? DemoData.Usage : SnapshotStore.Usage();
-        UsageText.Text = string.Format(Loc.T("Set.Usage"), Math.Max(1, bytes / 1024 / 1024), count, Demo ? @"C:\Users\demo\AppData\Local\ChangeLedger" : AppInfo.LocalDir);
+        UsageText.Text = string.Format(Loc.T("Set.Usage"), Math.Max(1, bytes / 1024 / 1024), count, Demo ? @"C:\Users\demo\AppData\Local\ChangeLedger" : SnapshotStore.Root);
         var info = Demo ? new TaskRegistration.Info(TaskState.Ok) : TaskRegistration.Status();
         var text = info.State switch
         {
@@ -127,7 +127,7 @@ public partial class SettingsSection
     {
         if (Demo) return;
         var (bytes, count) = SnapshotStore.Usage();
-        if (MessageBox.Show(string.Format(Loc.T("Set.Delete.Confirm"), count, Math.Max(1, bytes / 1024 / 1024), AppInfo.LocalDir), AppInfo.DisplayName,
+        if (MessageBox.Show(string.Format(Loc.T("Set.Delete.Confirm"), count, Math.Max(1, bytes / 1024 / 1024), SnapshotStore.Root), AppInfo.DisplayName,
                 MessageBoxButton.OKCancel, MessageBoxImage.Warning) != MessageBoxResult.OK) return;
         Try(TaskRegistration.Remove);
         Settings.Current.DailySnapshot = false;
@@ -135,7 +135,7 @@ public partial class SettingsSection
         Settings.Save();
         var deleted = Runner.Locked(() =>
         {
-            try { if (Directory.Exists(AppInfo.LocalDir)) Directory.Delete(AppInfo.LocalDir, recursive: true); return "ok"; }
+            try { if (Directory.Exists(SnapshotStore.Root)) Directory.Delete(SnapshotStore.Root, recursive: true); return "ok"; }
             catch (Exception e) when (e is IOException or UnauthorizedAccessException) { Log.Warn("data folder not deleted", e); return e.Message; }
         });
         if (deleted != "ok") MessageBox.Show(deleted ?? Loc.T("Snap.Busy"), AppInfo.DisplayName);

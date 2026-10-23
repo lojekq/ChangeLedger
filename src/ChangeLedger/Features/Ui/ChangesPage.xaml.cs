@@ -376,6 +376,13 @@ public partial class ChangesPage
             : null;
         EmptyText.Text = empty ?? "";
         EmptyPanel.Visibility = empty is null ? Visibility.Collapsed : Visibility.Visible;
+        DiffList.Visibility = empty is null ? Visibility.Visible : Visibility.Collapsed; // its scroll viewer would sit on the button and take the clicks
+        // Before the first snapshot the bars and the timeline have nothing to show: the message takes the whole page, centred
+        var none = idx.Count == 0;
+        foreach (var e in new UIElement[] { Toolbar, RangeBar, KeyText, Banners, Timeline }) e.Visibility = none ? Visibility.Collapsed : Visibility.Visible;
+        Grid.SetRow(EmptyPanel, none ? 0 : 4);
+        Grid.SetRowSpan(EmptyPanel, none ? 5 : 1);
+        EmptyPanel.Margin = new(none ? 0 : Timeline.Width + 12, 0, 0, 0); // otherwise centred over the diff column
         EmptySnapshot.Visibility = idx.Count <= 1 && !Args.Current.Demo ? Visibility.Visible : Visibility.Collapsed;
         if (diff is null) return;
 

@@ -28,7 +28,12 @@ public sealed class LedgerState
 /// </summary>
 public static partial class SnapshotStore
 {
-    static string Root => AppInfo.LocalDir;
+    /// <summary>%LOCALAPPDATA%\ChangeLedger; a Debug build takes CHANGELEDGER_DATA_DIR instead, so UI tests never touch real data.</summary>
+    public static string Root =>
+#if DEBUG
+        Environment.GetEnvironmentVariable("CHANGELEDGER_DATA_DIR") is { Length: > 0 } test ? test :
+#endif
+        AppInfo.LocalDir;
     public static string SnapDir => Path.Combine(Root, "snapshots");
     public static string IndexPath => Path.Combine(Root, "index.jsonl");
     static string StatePath => Path.Combine(Root, "state.json");
