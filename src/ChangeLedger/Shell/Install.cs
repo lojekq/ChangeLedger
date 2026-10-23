@@ -12,7 +12,8 @@ public static class Install
     public static readonly string Dir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Programs", AppInfo.Name);
     public static readonly string Exe = Path.Combine(Dir, AppInfo.Name + ".exe");
 
-    public static bool IsInstalled => IsAt(AppInfo.ExePath);
+    /// <summary>Never for a dev instance, so it writes no paths of its own (Run, task, Explorer menu) even from that folder.</summary>
+    public static bool IsInstalled => !AppInfo.IsDev && IsAt(AppInfo.ExePath);
 
     /// <summary>The installed exe, compared as Windows does: full path, any case.</summary>
     public static bool IsAt(string exePath) => string.Equals(Path.GetFullPath(exePath), Exe, StringComparison.OrdinalIgnoreCase);

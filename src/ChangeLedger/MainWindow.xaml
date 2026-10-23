@@ -4,7 +4,7 @@
                  xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
                  xmlns:l="clr-namespace:ChangeLedger.Shell"
                  xmlns:f="clr-namespace:ChangeLedger.Features"
-                 Title="{x:Static l:AppInfo.DisplayName}" Width="1100" Height="700" MinWidth="720" MinHeight="480"
+                 Title="{x:Static l:AppInfo.Title}" Width="1100" Height="700" MinWidth="720" MinHeight="480"
                  ExtendsContentIntoTitleBar="True" WindowBackdropType="Mica" WindowStartupLocation="CenterScreen">
     <Grid>
         <Grid.RowDefinitions>
@@ -13,7 +13,7 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <ui:TitleBar Title="{x:Static l:AppInfo.DisplayName}">
+        <ui:TitleBar Title="{x:Static l:AppInfo.Title}">
             <ui:TitleBar.Icon>
                 <ui:ImageIcon Source="pack://application:,,,/Assets/app.ico" />
             </ui:TitleBar.Icon>

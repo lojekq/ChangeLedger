@@ -62,6 +62,22 @@ public class ShellTests
     public void UpdateVersionCompare(string tag, string current, bool newer) => Assert.AreEqual(newer, Updates.IsNewer(tag, current));
 
     [TestMethod]
+    public void DevInstancesLiveApartFromTheInstalledCopy()
+    {
+        const string roaming = @"C:\Users\u\AppData\Roaming", local = @"C:\Users\u\AppData\Local";
+        Assert.AreEqual(("", $@"{roaming}\ChangeLedger", $@"{local}\ChangeLedger"), AppInfo.Resolve(false, null, roaming, local));          // Release: the real app
+        Assert.AreEqual(("-dev", $@"{roaming}\ChangeLedger-dev", $@"{local}\ChangeLedger-dev"), AppInfo.Resolve(true, null, roaming, local)); // Debug
+        var a = AppInfo.Resolve(false, @"C:\Demo\data\", roaming, local);
+        Assert.AreEqual((@"C:\Demo\data", @"C:\Demo\data\local"), (a.Data, a.Local));                                            // CHANGELEDGER_DATA_DIR
+        Assert.AreEqual(a.Suffix, AppInfo.Resolve(true, @"c:\demo\DATA", roaming, local).Suffix);                                // same folder, same instance
+        Assert.AreNotEqual(a.Suffix, AppInfo.Resolve(false, @"C:\Demo\data2", roaming, local).Suffix);
+        Assert.StartsWith("-", a.Suffix);
+        // this test run itself is a dev instance (TestSetup): it can never touch the installed copy
+        Assert.IsTrue(AppInfo.IsDev);
+        Assert.IsFalse(Install.IsInstalled);
+    }
+
+    [TestMethod]
     public void InstalledExeIsComparedAsWindowsDoes()
     {
         Assert.IsTrue(Install.IsAt(Install.Exe.ToUpperInvariant()));

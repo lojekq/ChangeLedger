@@ -61,6 +61,6 @@ public static class TrayMenu
         if (IconField?.GetValue(null) is not TaskbarIcon icon) return;
         var last = Ledger.State.LastCheckUtc;
         var changes = Ledger.Index.Where(e => e.T > (last ?? DateTime.UtcNow).AddDays(-1)).Sum(e => e.Total);
-        icon.ToolTipText = last is null ? AppInfo.DisplayName : string.Format(Loc.T("Tray.Tip"), AppInfo.DisplayName, Words.When(last.Value), changes);
+        icon.ToolTipText = last is null ? AppInfo.Title : string.Format(Loc.T("Tray.Tip"), AppInfo.Title, Words.When(last.Value), changes);
     }
 }

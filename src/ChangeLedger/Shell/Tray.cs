@@ -28,7 +28,7 @@ public static class Tray
         menu.Items.Add(new Separator());
         menu.Items.Add(Item(Loc.T("Tray.Exit"), exit));
 
-        icon = new TaskbarIcon { ToolTipText = AppInfo.DisplayName, ContextMenu = menu, NoLeftClickDelay = true };
+        icon = new TaskbarIcon { ToolTipText = AppInfo.Title, ContextMenu = menu, NoLeftClickDelay = true };
         icon.TrayLeftMouseUp += (_, _) => open(null);
         icon.TrayBalloonTipClicked += (_, _) => open(balloonPage);
         UpdateIcon();

@@ -39,13 +39,7 @@ public partial class App : Application
             Shutdown();
             return;
         }
-#if DEBUG
-        // UI tests with their own data folder (SnapshotStore.Root) run next to an installed copy instead of waking it
-        var isolated = Environment.GetEnvironmentVariable("CHANGELEDGER_DATA_DIR") is { Length: > 0 };
-#else
-        const bool isolated = false;
-#endif
-        if (!isolated && !SingleInstance.Acquire(() => Dispatcher.BeginInvoke(() => ShowMain(null)), () => Dispatcher.BeginInvoke(() => Quit(confirm: false))))
+        if (!SingleInstance.Acquire(() => Dispatcher.BeginInvoke(() => ShowMain(null)), () => Dispatcher.BeginInvoke(() => Quit(confirm: false))))
         {
             Shutdown();
             return;

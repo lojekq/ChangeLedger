@@ -8,11 +8,11 @@ public static class StartMenu
 {
     static string LinkPath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Programs), AppInfo.DisplayName + ".lnk");
 
-    public static bool Exists => File.Exists(LinkPath);
+    public static bool Exists => !AppInfo.IsDev && File.Exists(LinkPath); // a dev instance leaves the installed copy's shortcut alone
 
     public static void Set(bool on)
     {
-        if (Args.Current.Demo) return;
+        if (Args.Current.Demo || AppInfo.IsDev) return;
         if (!on) { File.Delete(LinkPath); return; }
         dynamic shell = Activator.CreateInstance(Type.GetTypeFromProgID("WScript.Shell")!)!;
         try

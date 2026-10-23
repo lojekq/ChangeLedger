@@ -73,4 +73,13 @@ public class V1Tests
         Assert.AreEqual(2, later.Crashes.Count);
         Assert.IsNull(Journal.DefenderOf(E(0, Defender, 5007, ("Old Value", ""), ("New Value", @"HKLM\SOFTWARE\Microsoft\Windows Defender\Signature Updates\x = 1"))));
     }
+
+    [TestMethod]
+    public void DevTaskPassesItsDataFolderOn()
+    {
+        // tests are a CHANGELEDGER_DATA_DIR instance (TestSetup): the scheduler must start the exe with that folder, not the real one
+        var xml = TaskRegistration.Xml(@"C:\x\ChangeLedger.exe", "12:00", "S-1-5-21-1");
+        StringAssert.Contains(xml, $"<Arguments>--snapshot --reason scheduled --data-dir &quot;{Shell.AppInfo.DataDir}&quot;</Arguments>");
+        Assert.AreNotEqual("", Shell.AppInfo.Suffix);
+    }
 }

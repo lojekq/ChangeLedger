@@ -10,10 +10,11 @@ public enum TaskState { Ok, Missing, StalePath, Off, Error }
 /// <summary>
 /// "ChangeLedger Snapshot (&lt;SID&gt;)" in the scheduler root, like OneDrive's tasks: current user, no elevation, StartWhenAvailable.
 /// Debug builds and exes outside Install.Dir never create it on their own: only the Repair button does.
+/// A dev instance has its own task ("ChangeLedger-dev Snapshot", data folder passed on): it never reads or replaces the installed copy's.
 /// </summary>
 public static class TaskRegistration
 {
-    static readonly string Name = $"ChangeLedger Snapshot ({WindowsIdentity.GetCurrent().User!.Value})";
+    static readonly string Name = $"{AppInfo.InstanceName} Snapshot ({WindowsIdentity.GetCurrent().User!.Value})";
     static readonly XNamespace Ns = "http://schemas.microsoft.com/windows/2004/02/mit/task";
 
     public sealed record Info(TaskState State, DateTime? LastRun = null, int? LastResult = null);
@@ -75,6 +76,10 @@ public static class TaskRegistration
         if (Status().State is TaskState.Ok or TaskState.StalePath) Repair();
     }
 
+    // The scheduler starts the exe without this process's environment: a CHANGELEDGER_DATA_DIR instance passes its folder on
+    static string DataDirArg => string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable(AppInfo.DataDirVariable)) ? ""
+        : SecurityElement.Escape($" --data-dir \"{AppInfo.DataDir}\"");
+
     static bool IsNotFound(Exception e) => e.HResult is unchecked((int)0x80070002) or unchecked((int)0x80070003);
 
     internal static string Xml(string exe, string time, string sid) => $"""
@@ -110,7 +115,7 @@ public static class TaskRegistration
           <Actions Context="Author">
             <Exec>
               <Command>{SecurityElement.Escape(exe)}</Command>
-              <Arguments>--snapshot --reason scheduled</Arguments>
+              <Arguments>--snapshot --reason scheduled{DataDirArg}</Arguments>
             </Exec>
           </Actions>
         </Task>

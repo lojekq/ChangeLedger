@@ -1,6 +1,6 @@
 # UI check of the empty Changes page (owner's report on 1.0.2): pwsh tools/ui-empty-state.ps1 from the repo root.
-# A Debug build with CHANGELEDGER_DATA_DIR on an empty folder in C:\Demo, so real data is never read or written and an
-# installed copy keeps running. Checks: the message and its button are centred on the page at two window sizes;
+# A Debug build with CHANGELEDGER_DATA_DIR on an empty folder in C:\Demo: a dev instance, so real data is never read or
+# written and an installed copy keeps running. Checks: the message and its button are centred on the page at two window sizes;
 # the button takes a snapshot, after which the timeline has a day and the first-snapshot message replaces the empty one.
 # Takes the desktop lock C:\Demo\desktop.lock (00-shared §9.6). Exit code 0 = passed.
 $ErrorActionPreference = 'Stop'; $PSNativeCommandUseErrorActionPreference = $true
@@ -45,7 +45,7 @@ try {
   $btn = Centred $w '1500x900'
   $btn.GetCurrentPattern([Windows.Automation.InvokePattern]::Pattern).Invoke()
   $file = $null
-  for ($i = 0; $i -lt 60 -and -not $file; $i++) { Start-Sleep -Milliseconds 500; $file = Get-ChildItem "$data\snapshots" -Filter *.json.gz -ErrorAction SilentlyContinue | Select-Object -First 1 }
+  for ($i = 0; $i -lt 60 -and -not $file; $i++) { Start-Sleep -Milliseconds 500; $file = Get-ChildItem "$data\local\snapshots" -Filter *.json.gz -ErrorAction SilentlyContinue | Select-Object -First 1 }
   Check ([bool]$file) "the button took a snapshot$(if ($file) { " ($($file.Name))" })"
   Start-Sleep 3
   $list = Find $w { $_.Current.ClassName -eq 'ListBox' }

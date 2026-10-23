@@ -6,22 +6,16 @@ namespace ChangeLedger.Shell;
 
 /// <summary>
 /// At start and every 24 h: GET releases/latest of AppInfo.Repo (no pre-releases, no drafts). Never downloads anything,
-/// errors go to the log only. Off in Debug and under --demo: 8 parallel sessions would eat the 60 requests/h anonymous limit.
+/// errors go to the log only. Off for a dev instance (Debug, CHANGELEDGER_DATA_DIR) and under --demo: 8 parallel sessions would eat the 60 requests/h anonymous limit.
 /// </summary>
 public static class Updates
 {
-#if DEBUG
-    static readonly bool IsDebug = true;
-#else
-    static readonly bool IsDebug = false;
-#endif
-
     /// <summary>Raised on the UI thread with the version ("0.2.0") and the release page.</summary>
     public static event Action<string, string>? Found;
 
     public static void Start()
     {
-        if (IsDebug || Args.Current.Demo) return;
+        if (AppInfo.IsDev || Args.Current.Demo) return;
         _ = Loop();
     }
 

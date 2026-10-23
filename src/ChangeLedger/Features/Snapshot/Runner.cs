@@ -6,12 +6,12 @@ namespace ChangeLedger.Features;
 public enum RunResult { Written, Unchanged, Busy, Elevated, Failed }
 
 /// <summary>
-/// Takes a snapshot under the mutex Local\lojekq.ChangeLedger.Snapshot: the scheduler's --snapshot process and the app's
+/// Takes a snapshot under the mutex Local\lojekq.&lt;InstanceName&gt;.Snapshot: the scheduler's --snapshot process and the app's
 /// "Snapshot now" never run two at once. A file is written only when the hash differs from the last one.
 /// </summary>
 public static class Runner
 {
-    const string MutexName = @"Local\lojekq.ChangeLedger.Snapshot";
+    static readonly string MutexName = $@"Local\lojekq.{AppInfo.InstanceName}.Snapshot"; // a dev instance snapshots its own folder
 
     /// <summary>Verb <c>--snapshot [--reason scheduled|manual]</c>: no window, Idle priority, 5 min limit. Exit 0 = ok, 1 = error, 2 = busy.</summary>
     public static int Verb(string[] args)

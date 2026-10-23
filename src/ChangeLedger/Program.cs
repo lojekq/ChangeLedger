@@ -1,3 +1,4 @@
+using System.IO;
 using ChangeLedger.Shell;
 
 namespace ChangeLedger;
@@ -14,6 +15,13 @@ public static class Program
     [STAThread]
     public static int Main(string[] args)
     {
+        // --data-dir <path> = CHANGELEDGER_DATA_DIR, set before AppInfo is first touched; child processes inherit it
+        var d = Array.IndexOf(args, "--data-dir");
+        if (d >= 0 && d + 1 < args.Length)
+        {
+            Environment.SetEnvironmentVariable(AppInfo.Name.ToUpperInvariant() + "_DATA_DIR", Path.GetFullPath(args[d + 1]));
+            args = [.. args[..d], .. args[(d + 2)..]];
+        }
         if (args.Length > 0 && Verbs.TryGetValue(args[0], out var verb))
         {
             Log.Verb = args[0].TrimStart('-');

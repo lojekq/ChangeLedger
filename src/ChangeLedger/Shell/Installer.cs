@@ -14,22 +14,17 @@ namespace ChangeLedger.Shell;
 /// One exe that installs itself, no admin rights. Started from anywhere but Install.Exe it offers "Install" (or "Update X → Y"),
 /// closes the running copy, copies itself to %LOCALAPPDATA%\Programs\&lt;App&gt;\&lt;App&gt;.exe, starts that copy and exits.
 /// The installed copy registers itself in Settings → Apps (HKCU Uninstall) on every start. --uninstall removes it all.
-/// Off in Debug, under --demo and for non-single-file builds (they need their DLLs next to them).
+/// Off for a dev instance (Debug, CHANGELEDGER_DATA_DIR), under --demo and for non-single-file builds (they need their DLLs next to them).
 /// </summary>
 public static class Installer
 {
-#if DEBUG
-    static readonly bool IsDebug = true;
-#else
-    static readonly bool IsDebug = false;
-#endif
     const string UninstallKey = @"Software\Microsoft\Windows\CurrentVersion\Uninstall\" + AppInfo.Name;
 
 #pragma warning disable IL3000 // empty Location is exactly the single-file test
     static readonly bool SingleFile = string.IsNullOrEmpty(typeof(Installer).Assembly.Location);
 #pragma warning restore IL3000
 
-    public static bool Available => !IsDebug && SingleFile && !Args.Current.Demo && Args.Current.Screenshot is null && !Args.Current.Autoplay;
+    public static bool Available => !AppInfo.IsDev && SingleFile && !Args.Current.Demo && Args.Current.Screenshot is null && !Args.Current.Autoplay;
 
     public enum Plan { Run, Install, Update, ShowInstalled }
 
@@ -45,7 +40,11 @@ public static class Installer
     public static async Task<bool> HandleAsync()
     {
         var a = Args.Current;
-        if (a.Uninstall) { await UninstallAsync(); return true; }
+        if (a.Uninstall) // a dev instance must never remove the real installation
+        {
+            if (!AppInfo.IsDev) await UninstallAsync();
+            return true;
+        }
         if (!Available || Install.IsInstalled) return false;
 
         var self = AppInfo.ExePath;

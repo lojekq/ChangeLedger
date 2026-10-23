@@ -7,7 +7,7 @@ namespace ChangeLedger.Shell;
 /// </summary>
 public static class SingleInstance
 {
-    static readonly string Name = $@"Local\lojekq.{AppInfo.Name}";
+    static readonly string Name = $@"Local\lojekq.{AppInfo.InstanceName}"; // a dev instance (-dev, -<hash>) never wakes the installed one
     static Mutex? mutex;
 
     /// <summary>False: another instance runs and was asked to show itself. The callbacks run on a pool thread.</summary>
