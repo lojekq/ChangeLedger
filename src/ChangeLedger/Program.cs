@@ -21,6 +21,10 @@ public static class Program
             catch (Exception e) { Log.Error($"{args[0]} failed", e); return 1; }
         }
         Args.Current = Args.Parse(args);
+        // Here, not in OnStartup: the UI culture is AsyncLocal, and a value set inside the async OnStartup
+        // is undone when it awaits, so strings built later fell back to the Windows language
+        Settings.Load();
+        Loc.Apply(Settings.Current.Language);
         var app = new App();
         app.InitializeComponent();
         return app.Run();

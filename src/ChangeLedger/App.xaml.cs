@@ -31,9 +31,7 @@ public partial class App : Application
     {
         base.OnStartup(e);
         var a = Args.Current;
-        Crash.Install(this);
-        Settings.Load();
-        Loc.Apply(Settings.Current.Language);
+        Crash.Install(this); // Settings and Loc are already loaded in Program.Main
         // --uninstall calls RemoveData inside the installer: the scheduler task goes with the program
         RemoveData = () => { if (!a.Demo) TaskRegistration.Remove(); return null; };
         if (await Installer.HandleAsync()) // install, update, switch to the installed copy or uninstall: this process is done
